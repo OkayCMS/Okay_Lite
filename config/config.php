@@ -13,7 +13,7 @@ db_user = "root"
 db_password = ""
 
 ;Имя базы
-db_name = "okay_lite"
+db_name = "okaycmslite-git"
 
 ;Префикс для таблиц
 db_prefix = s_;

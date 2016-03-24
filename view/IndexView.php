@@ -16,6 +16,7 @@ class IndexView extends View {
         $this->design->assign('cart',		$this->cart->get_cart());
         
         // Категории товаров
+        $this->count_visible($this->categories->get_categories_tree());
         $this->design->assign('categories', $this->categories->get_categories_tree());
         
         // Страницы
@@ -67,5 +68,18 @@ class IndexView extends View {
             return $this->body = $content;
         }
     }
-    
+
+    private function count_visible($categories = array()) {
+        $all_categories = $this->categories->get_categories();
+        foreach ($categories as $category) {
+            $category->has_children_visible = 0;
+            if ($category->parent_id && $category->visible) {
+                $all_categories[$category->parent_id]->has_children_visible = 1;
+            }
+            if ($category->subcategories) {
+                $this->count_visible($category->subcategories);
+            }
+        }
+    }
+
 }
