@@ -11,8 +11,14 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta name="description" content="{$meta_description|escape}{$filter_meta->description|escape}"/>
 	<meta name="keywords" content="{$meta_keywords|escape}{$filter_meta->keywords|escape}"/>
-	{if $module == 'ProductsView' && $set_canonical}
-		<meta name="robots" content="noindex,nofollow"/>
+    {if $module == 'ProductsView'}
+        {if $set_canonical}
+            <meta name="robots" content="noindex,nofollow"/>
+        {elseif $smarty.get.page || $smarty.get.sort}
+            <meta name="robots" content="noindex,follow"/>
+        {else}
+            <meta name="robots" content="index,follow"/>
+        {/if}
 	{else}
     	<meta name="robots" content="index,follow"/>
 	{/if}

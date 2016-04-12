@@ -56,6 +56,13 @@
             total_words=$(this).val().split(/[\s\.\?]+/).length;
             $(".word_desc").html(total_words);
         });
+
+        $('input').keyup(function () {
+            $('.fast_save').show();
+        });
+        $('.fast_save').on('click', function () {
+            $('input[type=submit]').first().trigger('click');
+        });
     });
 </script>
 {/if}
@@ -81,6 +88,9 @@
             <a href='{$config->root_url}?logout' id="logout">Выход</a>
         </div>
     </div>
+</div>
+<div class="fast_save">
+    <input class="button_green button_save" type="submit" name="" value="Сохранить"/>
 </div>
 </body>
 </html>
