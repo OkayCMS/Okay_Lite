@@ -75,16 +75,16 @@ function generate_meta_keywords()
 	return name;
 }
 
-function generate_meta_description()
-{
-    if(typeof(tinyMCE.get("description")) =='object')
+    function generate_meta_description()
     {
-        description = tinyMCE.get("description").getContent().replace(/(<([^>]+)>)/ig," ").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
-        return description;
+        if(typeof(tinyMCE.get("annotation")) =='object')
+        {
+            description = tinyMCE.get("annotation").getContent().replace(/(<([^>]+)>)/ig," ").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
+            return description;
+        }
+        else
+            return $('textarea[name=annotation]').val().replace(/(<([^>]+)>)/ig," ").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
     }
-    else
-        return $('textarea[name=description]').val().replace(/(<([^>]+)>)/ig," ").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
-}
 
 function generate_url()
 {

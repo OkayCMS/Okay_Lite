@@ -5,7 +5,9 @@ require_once('Okay.php');
 class Translations extends Okay {
     
     private $vars = array();
-    
+
+    private $labels_ids = array();
+
     function __construct() {
         parent::__construct();
         $this->init_translations();
@@ -18,11 +20,16 @@ class Translations extends Okay {
             if(!empty($translations)) {
                 foreach($translations as $result) {
                 	$this->vars[$result->label] = $result->value;
+                    $this->labels_ids[$result->label] = $result->id;
                 }
             }
         }
     }
-    
+
+    public function get_labels_ids() {
+        return $this->labels_ids;
+    }
+
     public function __get($name) {
         if($res = parent::__get($name)) {
             return $res;

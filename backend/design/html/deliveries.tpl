@@ -44,6 +44,15 @@
                         <input type="checkbox" id="{$delivery->id}" name="check[]" value="{$delivery->id}"/>
                         <label for="{$delivery->id}"></label>
                     </div>
+                    <div class="image cell">
+                        {if $delivery->image}
+                            <a href="{url module=DeliveryAdmin id=$delivery->id return=$smarty.server.REQUEST_URI}">
+                                <img src="{$delivery->image|escape|resize:35:35:false:$config->resized_deliveries_dir}"/>
+                            </a>
+                        {else}
+                            <img height="35" width="35" src="../design/{$settings->theme|escape}/images/no_image.png"/>
+                        {/if}
+                    </div>
                     <div class="name cell">
                         <a href="{url module=DeliveryAdmin id=$delivery->id return=$smarty.server.REQUEST_URI}">{$delivery->name|escape}</a>
                     </div>

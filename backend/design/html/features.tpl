@@ -237,8 +237,8 @@ $(function() {
         }
         $(this).parent().next().slideToggle(500);
     })
-    $('.cats_right li.selected').parents().removeClass('sub_menu');
-    $('.cats_right li.selected').parents().prev().find('span').addClass('open');
+    $('.cats_right li.selected').parents('.cats_right.sub_menu').removeClass('sub_menu');
+    $('.cats_right li.selected').parents('.cats_right').prev('li').find('span').addClass('open');
 	
 });
 </script>

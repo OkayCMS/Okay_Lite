@@ -1,30 +1,34 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns#">
+<html {if $language->label}lang="{$language->label|escape}"{/if} prefix="og: http://ogp.me/ns#">
 <head>
 	{* Полный базовый адрес *}
 	<base href="{$config->root_url}/"/>
-
-	{* Тайтл страницы *}
-	<title>{$meta_title|escape}{$filter_meta->title|escape}</title>
-
 	{* Метатеги *}
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<meta name="description" content="{$meta_description|escape}{$filter_meta->description|escape}"/>
-	<meta name="keywords" content="{$meta_keywords|escape}{$filter_meta->keywords|escape}"/>
-    {if $module == 'ProductsView'}
+    {* Тайтл страницы *}
+    <title>{$meta_title|escape}{$filter_meta->title|escape}</title>
+    {if (!empty($meta_description) || !empty($meta_keywords) || !empty($filter_meta->description) || !empty($filter_meta->keywords)) && !$smarty.get.page}
+        <meta name="description" content="{$meta_description|escape}{$filter_meta->description|escape}"/>
+        <meta name="keywords" content="{$meta_keywords|escape}{$filter_meta->keywords|escape}"/>
+    {/if}
+	{if $module == 'ProductsView'}
         {if $set_canonical}
-            <meta name="robots" content="noindex,nofollow"/>
+		    <meta name="robots" content="noindex,nofollow"/>
         {elseif $smarty.get.page || $smarty.get.sort}
+            <meta name="robots" content="noindex,follow"/>
+        {elseif isset($smarty.get.keyword)}
             <meta name="robots" content="noindex,follow"/>
         {else}
             <meta name="robots" content="index,follow"/>
         {/if}
-	{else}
+    {else}
     	<meta name="robots" content="index,follow"/>
 	{/if}
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
     <meta name="generator" content="OkayCMS Lite {$config->version}"/>
-
+    {if $language->label}
+        <meta http-equiv="Content-Language" content="{$language->label|escape}"/>
+    {/if}
 	{$rel_prev_next}
 
 	{* Изображения товара и поста для соц. сетей *}
@@ -39,10 +43,20 @@
 		<meta property="og:url" content="{$config->root_url}{if $lang_link}/{str_replace('/', '', $lang_link)}{/if}{$canonical}"/>
 		<meta property="og:type" content="article"/>
 		<meta property="og:title" content="{$post->name|escape}"/>
-		<meta property="og:image" content="{$post->image|resize:400:300:false:$config->resized_blog_dir}"/>
+        {if $post->image}
+            <meta property="og:image" content="{$post->image|resize:400:300:false:$config->resized_blog_dir}"/>
+        {else}
+            <meta property="og:image" content="{$config->root_url}/design/{$settings->theme}/images/logo_ru.png" />
+        {/if}
 		<meta property="og:description" content='{$post->annotation}'/>
-		<link rel="image_src" href="{$post->image|resize:400:300:false:$config->resized_blog_dir}"/>
-	{/if}
+    {else}
+        <meta property="og:title" content="{$settings->site_name}" />
+        <meta property="og:type" content="website"/>
+        <meta property="og:url" content="{$config->root_url}"/>
+        <meta property="og:image" content="{$config->root_url}/design/{$settings->theme}/images/logo_ru.png" />
+        <meta property="og:site_name" content="{$settings->site_name}"/>
+        <meta property="og:description" content="{$meta_description|escape}"/>
+    {/if}
 
 	{* Канонический адрес страницы *}
 	{if isset($canonical)}
@@ -192,7 +206,7 @@
 		{* Логотип сайта *}
 		<div class="col-xs-6 col-lg-3 text-md-right p-r-0-md_down">
 			<a href="{$lang_link}">
-				<img class="img-fluid" src="design/{$settings->theme|escape}/images/logo{if $language->label}_{$language->label}{/if}.png" alt="{$settings->site_name|escape}"/>
+				<img class="img-fluid logo_fix" src="design/{$settings->theme|escape}/images/logo{if $language->label}_{$language->label}{/if}.png" alt="{$settings->site_name|escape}"/>
 			</a>
 		</div>
 
@@ -214,8 +228,8 @@
 		{* Телефоны *}
 		<div class="col-xs-8 col-lg-2 p-l-0 p-l-1-md_down">
 			<div class="i-phone h5 font-weight-bold">
-				<div><a class="link-black" href="tel:{$lang->index_phone_1}">{$lang->index_phone_1}</a></div>
-				<div><a class="link-black" href="tel:{$lang->index_phone_2}">{$lang->index_phone_2}</a></div>
+				<div><a class="link-black" href="tel:{$lang->index_phone_1}" data-language="{$translate_id['index_phone_1']}" >{$lang->index_phone_1}</a></div>
+				<div><a class="link-black" href="tel:{$lang->index_phone_2}" data-language="{$translate_id['index_phone_2']}" >{$lang->index_phone_2}</a></div>
 			</div>
 		</div>
 	</div>

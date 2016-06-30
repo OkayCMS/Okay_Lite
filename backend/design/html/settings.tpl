@@ -56,6 +56,8 @@
             <li><label class=property>Оповещение о заказах</label><input name="order_email" class="okay_inp" type="text" value="{$settings->order_email|escape}" /></li>
             <li><label class=property>Оповещение о комментариях</label><input name="comment_email" class="okay_inp" type="text" value="{$settings->comment_email|escape}" /></li>
             <li><label class=property>Обратный адрес оповещений</label><input name="notify_from_email" class="okay_inp" type="text" value="{$settings->notify_from_email|escape}" /></li>
+            <li><label class=property>Имя отправителя письма</label><input name="notify_from_name" class="okay_inp" type="text" value="{$settings->notify_from_name|escape}" /></li>
+
         </ul>
     </div>
     <div class="block layer">

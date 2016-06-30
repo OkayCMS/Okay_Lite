@@ -28,19 +28,22 @@ class BlogView extends View {
         // Автозаполнение имени для формы комментария
         if(!empty($this->user)) {
             $this->design->assign('comment_name', $this->user->name);
+            $this->design->assign('comment_email', $this->user->email);
         }
         
         // Принимаем комментарий
         if ($this->request->method('post') && $this->request->post('comment')) {
             $comment = new stdClass;
             $comment->name = $this->request->post('name');
+            $comment->email = $this->request->post('email');
             $comment->text = $this->request->post('text');
             $captcha_code =  $this->request->post('captcha_code', 'string');
             
             // Передадим комментарий обратно в шаблон - при ошибке нужно будет заполнить форму
             $this->design->assign('comment_text', $comment->text);
             $this->design->assign('comment_name', $comment->name);
-            
+            $this->design->assign('comment_email', $comment->email);
+
             // Проверяем капчу и заполнение формы
             if ($this->settings->captcha_post && ($_SESSION['captcha_code'] != $captcha_code || empty($captcha_code))) {
                 $this->design->assign('error', 'captcha');
@@ -72,8 +75,13 @@ class BlogView extends View {
         }
         
         // Комментарии к посту
-        $comments = $this->comments->get_comments(array('type'=>'blog', 'object_id'=>$post->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR']));
+        $comments = $this->comments->get_comments(array('has_parent'=>false, 'type'=>'blog', 'object_id'=>$post->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR']));
+        $children = array();
+        foreach ($this->comments->get_comments(array('has_parent'=>true, 'type'=>'blog', 'object_id'=>$post->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR'])) as $c) {
+            $children[$c->parent_id][] = $c;
+        }
         $this->design->assign('comments', $comments);
+        $this->design->assign('children', $children);
         $this->design->assign('post',      $post);
         
         // Соседние записи

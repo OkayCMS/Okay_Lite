@@ -139,9 +139,12 @@ $(function() {
                     <li class="move">
                         <div class="move_zone"></div>
                     </li>
-                    <li class="name">
+                    <li class="name {if $c@first}main_curr{/if}">
                         <input name="currency[id][{$c->id}]" type="hidden" value="{$c->id|escape}"/>
                         <input name="currency[name][{$c->id}]" type="text" value="{$c->name|escape}"/>
+                        {if $c@first}
+                            <span class="main_curr_icon">Основная</span>
+                        {/if}
                     </li>
                     <li class="icons currency">
                         <a class="cents" href="#" title="Отображать копейки"></a>

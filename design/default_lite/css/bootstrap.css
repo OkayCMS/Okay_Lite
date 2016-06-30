@@ -4270,3 +4270,18 @@ a.bg-pink:focus, a.bg-pink:hover {
 @media (min-width: 1200px) {
   .hidden-xl {
     display: none !important; } }
+
+.ajax_wait{
+    background: rgba(255, 255, 255, 0.52) url('../images/ajax_wait.gif') no-repeat;
+    display: block;
+    height: 100%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    position: absolute;
+    background-position: 400px 400px;
+}
+.logo_fix{
+    position: relative;
+    top: -4px;
+}

@@ -11,28 +11,28 @@
 {/if}
 
 {if $message_success}
-<!-- Системное сообщение -->
-<div class="message message_success">
-	<span class="text">{if $message_success=='updated'}Пользователь отредактирован{else}{$message_success|escape}{/if}</span>
-	{if $smarty.get.return}
-	<a class="button" href="{$smarty.get.return}">Вернуться</a>
-	{/if}
-</div>
-<!-- Системное сообщение (The End)-->
+    <!-- Системное сообщение -->
+    <div class="message message_success">
+        <span class="text">{if $message_success=='updated'}Пользователь отредактирован{else}{$message_success|escape}{/if}</span>
+        {if $smarty.get.return}
+        <a class="button" href="{$smarty.get.return}">Вернуться</a>
+        {/if}
+    </div>
+    <!-- Системное сообщение (The End)-->
 {/if}
 
 {if $message_error}
-<!-- Системное сообщение -->
-<div class="message message_error">
-	<span class="text">{if $message_error=='login_exists'}Пользователь с таким email уже зарегистрирован
-	{elseif $message_error=='empty_name'}Введите имя пользователя
-	{elseif $message_error=='empty_email'}Введите email пользователя
-	{else}{$message_error|escape}{/if}</span>
-	{if $smarty.get.return}
-	<a class="button" href="{$smarty.get.return}">Вернуться</a>
-	{/if}
-</div>
-<!-- Системное сообщение (The End)-->
+    <!-- Системное сообщение -->
+    <div class="message message_error">
+        <span class="text">{if $message_error=='login_exists'}Пользователь с таким email уже зарегистрирован
+        {elseif $message_error=='empty_name'}Введите имя пользователя
+        {elseif $message_error=='empty_email'}Введите email пользователя
+        {else}{$message_error|escape}{/if}</span>
+        {if $smarty.get.return}
+        <a class="button" href="{$smarty.get.return}">Вернуться</a>
+        {/if}
+    </div>
+    <!-- Системное сообщение (The End)-->
 {/if}
 
 
@@ -67,22 +67,16 @@
 				</li>
 				{/if}
 				<li><label class=property>Email</label><input name="email" class="okay_inp" type="text" value="{$user->email|escape}" /></li>
+                <li><label class=property>Телефон</label><input name="phone" class="okay_inp" type="text" value="{$user->phone|escape}" /></li>
+                <li><label class=property>Адрес</label><input name="address" class="okay_inp" type="text" value="{$user->address|escape}" /></li>
 				<li><label class=property>Дата регистрации</label><input name="email" class="okay_inp" type="text" disabled value="{$user->created|date}" /></li>
 				<li><label class=property>Последний IP</label><input name="email" class="okay_inp" type="text" disabled value="{$user->last_ip|escape}" /></li>
 			</ul>
 		</div>
-
-
-		
-		<!-- Параметры страницы (The End)-->			
-		
+		<!-- Параметры страницы (The End)-->
 	<input class="button_green button_save" type="submit" name="user_info" value="Сохранить" />
 </div>
-		
-	 
-	<!-- Левая колонка свойств товара (The End)--> 
-	
-		
+	<!-- Левая колонка свойств товара (The End)-->
 </form>
 <!-- Основная форма (The End) -->
  
@@ -128,9 +122,9 @@
 	<label id='check_all' class='dash_link'>Выбрать все</label>
 
 	<span id=select>
-	<select name="action">
-		<option value="delete">Удалить</option>
-	</select>
+        <select name="action">
+            <option value="delete">Удалить</option>
+        </select>
 	</span>
 
 

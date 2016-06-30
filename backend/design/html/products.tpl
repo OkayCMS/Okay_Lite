@@ -22,15 +22,15 @@
 
 {* Поиск *}
 <form method="get">
-<div id="search">
-	<input type="hidden" name="module" value="ProductsAdmin">
-	<input class="search" type="text" name="keyword" value="{$keyword|escape}" />
-	<input class="search_button" type="submit" value=""/>
-</div>
+    <div id="search">
+        <input type="hidden" name="module" value="ProductsAdmin">
+        <input class="search" type="text" name="keyword" value="{$keyword|escape}" />
+        <input class="search_button" type="submit" value=""/>
+    </div>
 </form>
 	
 {* Заголовок *}
-<div id="header">	
+<div id="header" style="overflow: visible">
 	{if $products_count}
 		{if $category->name || $brand->name}
 			<h1>{$category->name} {$brand->name} ({$products_count} {$products_count|plural:'товар':'товаров':'товара'})</h1>
@@ -43,7 +43,13 @@
 		<h1>Нет товаров</h1>
 	{/if}
 	<a class="add" href="{url module=ProductAdmin return=$smarty.server.REQUEST_URI}">Добавить товар</a>
-</div>	
+    <div class="helper_wrap">
+        <a class="top_help" id="show_help_search" href="https://www.youtube.com/watch?v=5vO7uMwM9VA" target="_blank"></a>
+        <div class="right helper_block topvisor_help">
+            <p>Видеоинструкция по разделу</p>
+        </div>
+    </div>
+</div>
 
 <div id="main_list">
     
@@ -109,12 +115,7 @@
                             <label data-vid="{$variant->id}" class="yandex_icon {if $variant->yandex}active{/if}"></label>
                             <input class="price {if $variant->compare_price>0}compare_price{/if}" type="text" name="price[{$variant->id}]" value="{$variant->price}"
                             {if $variant->compare_price>0}title="Старая цена &mdash; {$variant->compare_price} {if $variant->currency_id}{$currencies[$variant->currency_id]->sign}{else}{$currency->sign}{/if}"{/if} />
-                            <select name="variant_currencies_id[{$variant->id}]">
-                                {foreach $currencies as $currency}
-                                    <option value="{$currency->id}"
-                                        {if $currency->id == $variant->currency_id}selected=""{/if}>{$currency->code}</option>
-                                {/foreach}
-                            </select>
+                            {if isset($currencies[$variant->currency_id])}<span>{$currencies[$variant->currency_id]->code}</span>{/if}
                             <input class="stock" type="text" name="stock[{$variant->id}]" value="{if $variant->infinity}∞{else}{$variant->stock}{/if}"/>{$settings->units}
                         </li>
                     {/foreach}
@@ -589,8 +590,8 @@ $(function() {
         $(this).parent().next().slideToggle(500);
     });
 
-    $('.cats_right li.selected').parents().removeClass('sub_menu');
-    $('.cats_right li.selected').parents().prev().find('span').addClass('open');
+    $('.cats_right li.selected').parents('.cats_right.sub_menu').removeClass('sub_menu');
+    $('.cats_right li.selected').parents('.cats_right').prev('li').find('span').addClass('open');
 
 });
 

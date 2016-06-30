@@ -70,6 +70,20 @@
 	
 	<!-- Левая колонка свойств товара -->
 	<div id="column_right">
+        <div class="block layer images">
+            <h2>Изображение</h2>
+            <input class='upload_image' name="image" type="file"/>
+            <input type="hidden" name="delete_image" value=""/>
+            {if $delivery->image}
+                <ul>
+                    <li>
+                        <a href='#' class="delete"></a>
+                        <img src="{$delivery->image|resize:100:100:false:$config->resized_deliveries_dir}" alt="" />
+                    </li>
+                </ul>
+            {/if}
+        </div>
+
 		<div class="block layer">
 		<h2>Возможные способы оплаты</h2>
 		<ul>

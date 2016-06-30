@@ -44,6 +44,7 @@ class IndexAdmin extends Okay {
         'StylesAdmin'         => 'design',
         'TemplatesAdmin'      => 'design',
         'ImagesAdmin'         => 'design',
+        'ScriptsAdmin'        => 'design',
 
         
         'SettingsAdmin'       => 'settings',
@@ -92,6 +93,7 @@ class IndexAdmin extends Okay {
         'StylesAdmin'         => 'design',
         'TemplatesAdmin'      => 'design',
         'ImagesAdmin'         => 'design',
+        'ScriptsAdmin'        => 'design',
         'SettingsAdmin'       => 'settings',
         'CurrencyAdmin'       => 'currency',
         'DeliveriesAdmin'     => 'delivery',

@@ -113,6 +113,11 @@ switch ($object) {
             $result = (bool)$okay->db->query($q);
     	}
         break;
+    case 'feedback':
+        if($okay->managers->access('feedbacks')) {
+            $result = $okay->feedbacks->update_feedback($id, $values);
+        }
+        break;
     
 }
 

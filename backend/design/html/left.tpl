@@ -131,14 +131,14 @@
 	<li class="{if $menu_selected == 'auto'}active{/if}">
 		<a href="index.php?module=ImportAdmin">
 			<i class="icon_automatic"></i>
-			<span>Автоматизация</span>
+			<span>Импорт/экспорт</span>
 		</a>
 	</li>
 	{elseif in_array('export', $manager->permissions)}
 	<li class="{if $menu_selected == 'auto'}active{/if}">
 		<a href="index.php?module=ExportAdmin">
 			<i class="icon_automatic"></i>
-			<span>Автоматизация</span>
+			<span>Импорт/экспорт</span>
 		</a>
 	</li>
 	{/if}
@@ -161,7 +161,7 @@
 		<li class="{if $menu_selected == 'design'}active{/if}">
 			<a href="index.php?module=ThemeAdmin">
 				<i class="icon_design"></i>
-				<span>Дизайн</span>
+				<span>Шаблоны</span>
 			</a>
 		</li>
 	{/if}

@@ -30,7 +30,7 @@
 			{* Варианты товара *}
 			<select name="variant" class="fn-variant okaycmslite form-control c-select{if $product->variants|count < 2} hidden-xs-up{/if}">
 	            {foreach $product->variants as $v}
-	                <option value="{$v->id}" data-price="{$v->price|convert}" data-stock="{$v->stock}"{if $v->compare_price > 0} data-cprice="{$v->compare_price|convert}"{/if}{if $v->sku} data-sku="{$v->sku}"{/if}{if $v@first} selected{/if}>{if $v->name}{$v->name}{else}{$product->name|escape}{/if}</option>
+	                <option value="{$v->id}" data-price="{$v->price|convert}" data-stock="{$v->stock}"{if $v->compare_price > 0} data-cprice="{$v->compare_price|convert}"{/if}{if $v->sku} data-sku="{$v->sku}"{/if}>{if $v->name}{$v->name}{else}{$product->name|escape}{/if}</option>
 	            {/foreach}
 	        </select>
 

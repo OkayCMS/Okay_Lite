@@ -30,7 +30,7 @@ class ProductsAdmin extends Okay {
         }
         
         // Бренды категории
-        $brands = $this->brands->get_brands(array('category_id'=>$category->children));
+        $brands = $this->brands->get_brands(array('category_id'=>$filter['category_id']));
         $this->design->assign('brands', $brands);
         
         // Все бренды
@@ -75,14 +75,13 @@ class ProductsAdmin extends Okay {
             // Сохранение цен и наличия
             $prices = $this->request->post('price');
             $stocks = $this->request->post('stock');
-            $variant_currencies = $this->request->post('variant_currencies_id');
-            
+
             foreach($prices as $id=>$price) {
                 $stock = $stocks[$id];
                 if($stock == '∞' || $stock == '') {
                     $stock = null;
                 }
-                $this->variants->update_variant($id, array('price'=>$price, 'stock'=>$stock, 'currency_id' => $variant_currencies[$id]));
+                $this->variants->update_variant($id, array('price'=>$price, 'stock'=>$stock));
             }
             
             // Сортировка

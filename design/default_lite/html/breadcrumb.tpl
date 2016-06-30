@@ -2,7 +2,7 @@
 <ol class="breadcrumb">
 	{* Ссылка на главную *}
     <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-	    <a itemprop="url" href="{$lang_link}" data-language="{$translate_id['breadcrumb_home']}">
+	    <a itemprop="url" href="{if !empty($lang_link)}{$lang_link}{else}/{/if}" data-language="{$translate_id['breadcrumb_home']}">
 		    <span itemprop="title">{$lang->breadcrumb_home}</span>
 	    </a>
     </li>

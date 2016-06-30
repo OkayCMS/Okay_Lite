@@ -100,23 +100,31 @@ $(function() {
 			<h2>{$payment_module->name}</h2>
 			{* Параметры модуля оплаты *}
 			<ul>
-			{foreach $payment_module->settings as $setting}
-				{$variable_name = $setting->variable}
-				{if $setting->options|@count>1}
-				<li><label class=property>{$setting->name}</label>
-				<select name="payment_settings[{$setting->variable}]">
-					{foreach $setting->options as $option}
-					<option value='{$option->value}' {if $option->value==$payment_settings[$setting->variable]}selected{/if}>{$option->name|escape}</option>
-					{/foreach}
-				</select>
-				</li>
-				{elseif $setting->options|@count==1}
-				{$option = $setting->options|@first}
-				<li><label class="property" for="{$setting->variable}">{$setting->name|escape}</label><input name="payment_settings[{$setting->variable}]" class="okay_inp" type="checkbox" value="{$option->value|escape}" {if $option->value==$payment_settings[$setting->variable]}checked{/if} id="{$setting->variable}" /> <label for="{$setting->variable}">{$option->name}</label></li>
-				{else}
-				<li><label class="property" for="{$setting->variable}">{$setting->name|escape}</label><input name="payment_settings[{$setting->variable}]" class="okay_inp" type="text" value="{$payment_settings[$setting->variable]|escape}" id="{$setting->variable}"/></li>
-				{/if}
-			{/foreach}
+                {foreach $payment_module->settings as $setting}
+                    {$variable_name = $setting->variable}
+                    {if $setting->options|@count>1}
+                        <li>
+                            <label class=property>{$setting->name}</label>
+                            <select name="payment_settings[{$setting->variable}]">
+                                {foreach $setting->options as $option}
+                                    <option value='{$option->value}' {if $option->value==$payment_settings[$setting->variable]}selected{/if}>{$option->name|escape}</option>
+                                {/foreach}
+                            </select>
+                        </li>
+                        {elseif $setting->options|@count==1}
+                        {$option = $setting->options|@first}
+                        <li>
+                            <label class="property" for="{$setting->variable}">{$setting->name|escape}</label>
+                            <input name="payment_settings[{$setting->variable}]" class="okay_inp" type="checkbox" value="{$option->value|escape}" {if $option->value==$payment_settings[$setting->variable]}checked{/if} id="{$setting->variable}" />
+                            <label for="{$setting->variable}">{$option->name}</label>
+                        </li>
+                    {else}
+                        <li>
+                            <label class="property" for="{$setting->variable}">{$setting->name|escape}</label>
+                            <input name="payment_settings[{$setting->variable}]" class="okay_inp" type="text" value="{$payment_settings[$setting->variable]|escape}" id="{$setting->variable}"/>
+                        </li>
+                    {/if}
+                {/foreach}
 			</ul>
 			{* END Параметры модуля оплаты *}
         	
@@ -129,12 +137,26 @@ $(function() {
 	
 	<!-- Правая колонка -->
 	<div id="column_right">
+        <div class="block layer images">
+            <h2>Изображение</h2>
+            <input class='upload_image' name="image" type="file"/>
+            <input type="hidden" name="delete_image" value=""/>
+            {if $payment_method->image}
+                <ul>
+                    <li>
+                        <a href='#' class="delete"></a>
+                        <img src="{$payment_method->image|resize:100:100:false:$config->resized_payments_dir}" alt="" />
+                    </li>
+                </ul>
+            {/if}
+        </div>
+
 		<div class="block layer">
 		<h2>Возможные способы доставки</h2>
 		<ul>
 		{foreach $deliveries as $delivery}
 			<li>
-			<input type=checkbox name="payment_deliveries[]" id="delivery_{$delivery->id}" value='{$delivery->id}' {if in_array($delivery->id, $payment_deliveries)}checked{/if}> <label for="delivery_{$delivery->id}">{$delivery->name}</label><br>
+			    <input type=checkbox name="payment_deliveries[]" id="delivery_{$delivery->id}" value='{$delivery->id}' {if in_array($delivery->id, $payment_deliveries)}checked{/if}> <label for="delivery_{$delivery->id}">{$delivery->name}</label><br>
 			</li>
 		{/foreach}
 		</ul>		

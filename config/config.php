@@ -73,6 +73,13 @@ resized_brands_dir = files/brands_resized/;
 original_categories_dir = files/categories/;
 resized_categories_dir = files/categories_resized/;
 
+;Изображения оригиналов и нарезок фоток доставки
+original_deliveries_dir = files/deliveries/;
+resized_deliveries_dir = files/deliveries_resized/;
+
+;Изображения оригиналов и нарезок фоток способов оплаты
+original_payments_dir = files/payments/;
+resized_payments_dir = files/payments_resized/;
 
 [files]
 

@@ -42,6 +42,15 @@
                         <input type="checkbox" id="{$payment_method->id}" name="check[]" value="{$payment_method->id}"/>
                         <label for="{$payment_method->id}">
                     </div>
+                    <div class="image cell">
+                        {if $payment_method->image}
+                            <a href="{url module=PaymentMethodAdmin id=$payment_method->id return=$smarty.server.REQUEST_URI}">
+                                <img src="{$payment_method->image|escape|resize:35:35:false:$config->resized_payments_dir}"/>
+                            </a>
+                        {else}
+                            <img height="35" width="35" src="../design/{$settings->theme|escape}/images/no_image.png"/>
+                        {/if}
+                    </div>
                     <div class="name cell">
                         <a href="{url module=PaymentMethodAdmin id=$payment_method->id return=$smarty.server.REQUEST_URI}">{$payment_method->name}</a>
                     </div>

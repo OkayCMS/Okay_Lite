@@ -27,6 +27,7 @@ class SettingsAdmin extends Okay {
             $this->settings->order_email = $this->request->post('order_email');
             $this->settings->comment_email = $this->request->post('comment_email');
             $this->settings->notify_from_email = $this->request->post('notify_from_email');
+            $this->settings->notify_from_name = $this->request->post('notify_from_name');
             
             $this->settings->decimals_point = $this->request->post('decimals_point');
             $this->settings->thousands_separator = $this->request->post('thousands_separator');

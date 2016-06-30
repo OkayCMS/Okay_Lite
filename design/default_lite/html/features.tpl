@@ -66,12 +66,12 @@
 		<div class="row m-y-1 p-x-05">
 			{* Минимальная цена товаров *}
 			<div class="col-xs-6">
-				<input id="fn-slider-min" name="p[min]" value="{$prices->current->min|default:$prices->range->min}" data-price="{$prices->range->min}" type="text" class="form-control">
+				<input id="fn-slider-min" name="p[min]" value="{($prices->current->min|default:$prices->range->min)|escape}" data-price="{$prices->range->min}" type="text" class="form-control">
 			</div>
 
 			{* Максимальная цена товаров *}
 			<div class="col-xs-6">
-				<input id="fn-slider-max" name="p[max]" value="{$prices->current->max|default:$prices->range->max}" data-price="{$prices->range->max}" type="text" class="form-control">
+				<input id="fn-slider-max" name="p[max]" value="{($prices->current->max|default:$prices->range->max)|escape}" data-price="{$prices->range->max}" type="text" class="form-control">
 			</div>
 		</div>
 		{* Слайдер цен *}

@@ -22,7 +22,14 @@ class ProductView extends View {
         
         $product->images = $this->products->get_images(array('product_id'=>$product->id));
         $product->image = reset($product->images);
-        
+        foreach ($product->images as $image) {
+            if(substr($image->filename, 0, 7) == 'http://') {
+                if($filename = $this->image->download_image($image->filename)) {
+                    $image->filename = $filename;
+                }
+            }
+        }
+
         $variants = array();
         foreach($this->variants->get_variants(array('product_id'=>$product->id)) as $v) {
             $variants[$v->id] = $v;
@@ -42,19 +49,22 @@ class ProductView extends View {
         // Автозаполнение имени для формы комментария
         if(!empty($this->user)) {
             $this->design->assign('comment_name', $this->user->name);
+            $this->design->assign('comment_email', $this->user->email);
         }
         
         // Принимаем комментарий
         if ($this->request->method('post') && $this->request->post('comment')) {
             $comment = new stdClass;
             $comment->name = $this->request->post('name');
+            $comment->email = $this->request->post('email');
             $comment->text = $this->request->post('text');
             $captcha_code =  $this->request->post('captcha_code', 'string');
             
             // Передадим комментарий обратно в шаблон - при ошибке нужно будет заполнить форму
             $this->design->assign('comment_text', $comment->text);
             $this->design->assign('comment_name', $comment->name);
-            
+            $this->design->assign('comment_email', $comment->email);
+
             // Проверяем капчу и заполнение формы
             if ($this->settings->captcha_product && ($_SESSION['captcha_code'] != $captcha_code || empty($captcha_code))) {
                 $this->design->assign('error', 'captcha');
@@ -94,7 +104,7 @@ class ProductView extends View {
             $related_products[$p->related_id] = null;
         }
         if(!empty($related_ids)) {
-            foreach($this->products->get_products(array('id'=>$related_ids, 'visible'=>1, 'in_stock'=>1)) as $p) {
+            foreach($this->products->get_products(array('id'=>$related_ids,'limit' => count($related_ids),'visible'=>1, 'in_stock'=>1)) as $p) {
                 $related_products[$p->id] = $p;
             }
             
@@ -122,12 +132,17 @@ class ProductView extends View {
         }
         
         // Отзывы о товаре
-        $comments = $this->comments->get_comments(array('type'=>'product', 'object_id'=>$product->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR']));
-        
+        $comments = $this->comments->get_comments(array('has_parent'=>false, 'type'=>'product', 'object_id'=>$product->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR']));
+        $children = array();
+        foreach ($this->comments->get_comments(array('has_parent'=>true, 'type'=>'product', 'object_id'=>$product->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR'])) as $c) {
+            $children[$c->parent_id][] = $c;
+        }
+
         // И передаем его в шаблон
         $this->design->assign('product', $product);
         $this->design->assign('comments', $comments);
-        
+        $this->design->assign('children', $children);
+
         // Категория и бренд товара
         $product->categories = $this->categories->get_categories(array('product_id'=>$product->id));
         $this->design->assign('brand', $this->brands->get_brand(intval($product->brand_id)));

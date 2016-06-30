@@ -7,55 +7,67 @@
 <script src="{$config->root_url}/backend/design/js/piecon/piecon.js"></script>
 <script>
 {if $filename}
-{literal}
-	
-	var in_process=false;
-	var count=1;
+    {literal}
 
-	// On document load
-	$(function(){
- 		Piecon.setOptions({fallback: 'force'});
- 		Piecon.setProgress(0);
-    	$("#progressbar").progressbar({ value: 1 });
-		in_process=true;
-		do_import();	    
-	});
-  
-	function do_import(from)
-	{
-		from = typeof(from) != 'undefined' ? from : 0;
-		$.ajax({
- 			 url: "ajax/import.php",
- 			 	data: {from:from},
- 			 	dataType: 'json',
-  				success: function(data){
-  					for(var key in data.items)
-  					{
-    					$('ul#import_result').prepend('<li><span class=count>'+count+'</span> <span title='+data.items[key].status+' class="status '+data.items[key].status+'"></span> <a target=_blank href="index.php?module=ProductAdmin&id='+data.items[key].product.id+'">'+data.items[key].product.name+'</a> '+data.items[key].variant.name+'</li>');
-    					count++;
-    				}
+        var in_process=false;
+        var count=1;
 
-    				Piecon.setProgress(Math.round(100*data.from/data.totalsize));
-   					$("#progressbar").progressbar({ value: 100*data.from/data.totalsize });
-  				
-    				if(data != false && !data.end)
-    				{
-    					do_import(data.from);
-    				}
-    				else
-    				{
-    					Piecon.setProgress(100);
-    					$("#progressbar").hide('fast');
-    					in_process = false;
-    				}
-  				},
-				error: function(xhr, status, errorThrown) {
-					alert(errorThrown+'\n'+xhr.responseText);
-        		}  				
-		});
-	
-	} 
-{/literal}
+        // On document load
+        $(function(){
+            Piecon.setOptions({fallback: 'force'});
+            Piecon.setProgress(0);
+            $("#progressbar").progressbar({ value: 1 });
+            in_process=true;
+            do_import();
+        });
+
+        function do_import(from)
+        {
+            from = typeof(from) != 'undefined' ? from : 0;
+            $.ajax({
+                 url: "ajax/import.php",
+                    data: {from:from},
+                    dataType: 'json',
+                    success: function(data){
+                        if (data.error) {
+                            var error = '';
+                            if (data.missing_fields) {
+                                error = '<span>В файле импорта отсутствуют необходимые столбцы: </span><b>';
+                                for (var i in data.missing_fields) {
+                                    error += data.missing_fields[i] + ', ';
+                                }
+                                error = error.substring(0, error.length-2);
+                                error += '</b>';
+                            }
+
+                            $("#progressbar").hide('fast');
+                            $('#import_error').html(error);
+                            $('#import_error').show();
+                        } else {
+                            for (var key in data.items) {
+                                $('ul#import_result').prepend('<li><span class=count>' + count + '</span> <span title=' + data.items[key].status + ' class="status ' + data.items[key].status + '"></span> <a target=_blank href="index.php?module=ProductAdmin&id=' + data.items[key].product.id + '">' + data.items[key].product.name + '</a> ' + data.items[key].variant.name + '</li>');
+                                count++;
+                            }
+
+                            Piecon.setProgress(Math.round(100 * data.from / data.totalsize));
+                            $("#progressbar").progressbar({value: 100 * data.from / data.totalsize});
+
+                            if (data != false && !data.end) {
+                                do_import(data.from);
+                            } else {
+                                Piecon.setProgress(100);
+                                $("#progressbar").hide('fast');
+                                in_process = false;
+                            }
+                        }
+                    },
+                    error: function(xhr, status, errorThrown) {
+                        alert(errorThrown+'\n'+xhr.responseText);
+                    }
+            });
+
+        }
+    {/literal}
 {/if}
 </script>
 
@@ -65,17 +77,24 @@
 	#result{ clear: both; width:100%;}
 </style>
 
+<div id="import_error" class="message message_error" style="display: none;"></div>
+
 {if $message_error}
-<!-- Системное сообщение -->
-<div class="message message_error">
-	<span class="text">
-	{if $message_error == 'no_permission'}Установите права на запись в папку {$import_files_dir}
-	{elseif $message_error == 'convert_error'}Не получилось сконвертировать файл в кодировку UTF8
-	{elseif $message_error == 'locale_error'}На сервере не установлена локаль {$locale}, импорт может работать некорректно
-	{else}{$message_error}{/if}
-	</span>
-</div>
-<!-- Системное сообщение (The End)-->
+    <!-- Системное сообщение -->
+    <div class="message message_error">
+        <span class="text">
+            {if $message_error == 'no_permission'}
+                Установите права на запись в папку {$import_files_dir}
+            {elseif $message_error == 'convert_error'}
+                Не получилось сконвертировать файл в кодировку UTF8
+            {elseif $message_error == 'locale_error'}
+                На сервере не установлена локаль {$locale}, импорт может работать некорректно
+            {else}
+                {$message_error}
+            {/if}
+        </span>
+    </div>
+    <!-- Системное сообщение (The End)-->
 {/if}
 
 	{if $message_error != 'no_permission'}
