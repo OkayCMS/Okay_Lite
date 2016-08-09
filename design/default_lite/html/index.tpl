@@ -33,22 +33,43 @@
 
 	{* Изображения товара и поста для соц. сетей *}
 	{if $module == 'ProductView'}
-		<meta property="og:url" content="{$config->root_url}{if $lang_link}/{str_replace('/', '', $lang_link)}{/if}{$canonical}"/>
-		<meta property="og:type" content="article"/>
-		<meta property="og:title" content="{$product->name|escape}"/>
-		<meta property="og:image" content="{$product->image->filename|resize:330:300}"/>
-		<meta property="og:description" content='{$product->annotation}'/>
-		<link rel="image_src" href="{$product->image->filename|resize:330:300}"/>
+        <meta property="og:url" content="{$config->root_url}{if $lang_link}/{str_replace('/', '', $lang_link)}{/if}{$canonical}"/>
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="{$product->name|escape}"/>
+        <meta property="og:image" content="{$product->image->filename|resize:330:300}"/>
+        <meta property="og:description" content='{$product->annotation}'/>
+        <link rel="image_src" href="{$product->image->filename|resize:330:300}"/>
+        {if $product->images}
+            {foreach $product->images|cut as $i=>$image}
+                {*for vk*}
+                <link rel="image_src" href="{$image->filename|resize:330:300}"/>
+                {*for fb*}
+                <meta property="og:image" content="{$image->filename|resize:330:300}"/>
+            {/foreach}
+        {/if}
+        {*twitter*}
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="{$product->name|escape}">
+        <meta name="twitter:description" content="{$product->annotation}">
+        <meta name="twitter:image" content="{$product->image->filename|resize:330:300}">
 	{elseif $module == 'BlogView'}
 		<meta property="og:url" content="{$config->root_url}{if $lang_link}/{str_replace('/', '', $lang_link)}{/if}{$canonical}"/>
 		<meta property="og:type" content="article"/>
 		<meta property="og:title" content="{$post->name|escape}"/>
         {if $post->image}
             <meta property="og:image" content="{$post->image|resize:400:300:false:$config->resized_blog_dir}"/>
+            <link rel="image_src" href="{$post->image|resize:400:300:false:$config->resized_blog_dir}"/>
         {else}
             <meta property="og:image" content="{$config->root_url}/design/{$settings->theme}/images/logo_ru.png" />
+            <meta name="twitter:image" content="{$config->root_url}/design/{$settings->theme}/images/logo_ru.png">
         {/if}
 		<meta property="og:description" content='{$post->annotation}'/>
+
+        {*twitter*}
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="{$post->name|escape}">
+        <meta name="twitter:description" content="{$post->annotation|escape}">
+        <meta name="twitter:image" content="{$post->image|resize:400:300:false:$config->resized_blog_dir}">
     {else}
         <meta property="og:title" content="{$settings->site_name}" />
         <meta property="og:type" content="website"/>
@@ -56,6 +77,12 @@
         <meta property="og:image" content="{$config->root_url}/design/{$settings->theme}/images/logo_ru.png" />
         <meta property="og:site_name" content="{$settings->site_name}"/>
         <meta property="og:description" content="{$meta_description|escape}"/>
+        <link rel="image_src" href="{$config->root_url}/design/{$settings->theme}/images/logo_ru.png"/>
+        {*twitter*}
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="{$settings->site_name}">
+        <meta name="twitter:description" content="{$meta_description|escape}">
+        <meta name="twitter:image" content="{$config->root_url}/design/{$settings->theme}/images/logo_ru.png">
     {/if}
 
 	{* Канонический адрес страницы *}
@@ -171,13 +198,13 @@
                         <div class="btn-group">
                             <a data-languages="true" class="nav-link link-black i-lang" href="#" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="false"><span class="lang-label">{$language->label}</span><span
-                                        class="lang-name">{$language->name}</span></a>
+                                        class="lang-name">{$language->{'name_'|cat:$language->label}}</span></a>
                             <div class="dropdown-menu">
                                 {foreach $languages as $l}
                                     {if $l->enabled}
                                         <a class="dropdown-item{if $language->id == $l->id} active{/if}"
                                            href="{$l->url}"><span class="lang-label">{$l->label}</span><span
-                                                    class="lang-name">{$l->name}</span></a>
+                                                    class="lang-name">{$l->{'name_'|cat:$language->label}}</span></a>
                                     {/if}
                                 {/foreach}
                             </div>

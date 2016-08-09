@@ -56,16 +56,20 @@
 						</div>
 
 						{* Рейтинг товара *}
-						<div id="product_{$product->id}" class="product_rating" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+                        <div id="product_{$product->id}" class="product_rating"{if $product->rating > 0} itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating"{/if}>
 							<span data-language="{$translate_id['product_rating']}">{$lang->product_rating}</span>:
 							<span class="rating_starOff">
 								<span class="rating_starOn" style="width:{$product->rating*90/5|string_format:'%.0f'}px;"></span>
 							</span>
                             {*Вывод количества голосов данного товара, скрыт ради микроразметки*}
-                            <span itemprop="reviewCount" style="display: none;">{$product->votes|string_format:"%.0f"}</span>
-                            <span itemprop="ratingValue">({$product->rating|string_format:"%.1f"})</span>
-                            {*Вывод лучшей оценки товара, вывод ради микроразметки*}
-                            <span itemprop="bestRating" style="display:none;">5</span>
+                            {if $product->rating > 0}
+                                <span itemprop="reviewCount" style="display: none;">{$product->votes|string_format:"%.0f"}</span>
+                                <span itemprop="ratingValue">({$product->rating|string_format:"%.1f"})</span>
+                                {*Вывод лучшей оценки товара, вывод ради микроразметки*}
+                                <span itemprop="bestRating" style="display:none;">5</span>
+                            {else}
+                                <span>({$product->rating|string_format:"%.1f"})</span>
+                            {/if}
                         </div>
 
 						{* Артикул товара *}
@@ -178,6 +182,8 @@
 				<div class="tab-pane collapse active" id="annotation" role="tabpanel" itemprop="description">
 					{$product->body}
 				</div>
+            {else}
+                <span style="display: none;" itemprop="description">{$product->name|escape}</span>
 			{/if}
 
 			{* Характеристики *}
@@ -347,48 +353,25 @@
 "image": "{/literal}{$product->image->filename|resize:330:300}{literal}",
 "description": "{/literal}{$product->annotation|strip_tags}{literal}",
 "mpn": "{/literal}{if $product->variant->sku}{$product->variant->sku}{else}Не указано{/if}{literal}",
-"brand": {
-"@type": "Brand",
-"name": "{/literal}{$brand->name|escape}{literal}"
-},
-"aggregateRating": {
-"@type": "AggregateRating",
-"ratingValue": "{/literal}{$product->rating|string_format:'%.1f'}{literal}",
-"reviewCount": "{/literal}{$product->votes|string_format:'%.0f'}{literal}"
-},
-"offers": {
-"@type": "Offer",
-"priceCurrency": "{/literal}{$currency->code|escape}{literal}",
-"price": "{/literal}{$product->variant->price|convert|replace:',':'.'}{literal}",
-"priceValidUntil": "{/literal}{$smarty.now|date_format:'%Y-%m-%d'}{literal}",
-"itemCondition": "http://schema.org/UsedCondition",
-"availability": "http://schema.org/InStock",
-"seller": {
-"@type": "Organization",
-"name": "{/literal}{$settings->company_name}{literal}"
-}
-}
-}
-</script>
-{/literal}{*микроразметка по схеме JSON-LD*}
+{/literal}
+{if $brand->name}
 {literal}
-<script type="application/ld+json">
-{
-"@context": "http://schema.org/",
-"@type": "Product",
-"name": "{/literal}{$product->name|escape}{literal}",
-"image": "{/literal}{$product->image->filename|resize:330:300}{literal}",
-"description": "{/literal}{$product->annotation|strip_tags}{literal}",
-"mpn": "{/literal}{if $product->variant->sku}{$product->variant->sku}{else}Не указано{/if}{literal}",
 "brand": {
 "@type": "Brand",
 "name": "{/literal}{$brand->name|escape}{literal}"
 },
+{/literal}
+{/if}
+{if $product->rating > 0}
+{literal}
 "aggregateRating": {
 "@type": "AggregateRating",
 "ratingValue": "{/literal}{$product->rating|string_format:'%.1f'}{literal}",
 "reviewCount": "{/literal}{$product->votes|string_format:'%.0f'}{literal}"
 },
+{/literal}
+{/if}
+{literal}
 "offers": {
 "@type": "Offer",
 "priceCurrency": "{/literal}{$currency->code|escape}{literal}",

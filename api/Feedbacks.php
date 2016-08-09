@@ -16,7 +16,8 @@ class Feedbacks extends Okay {
                 f.ip, 
                 f.message,
                 f.processed,
-                f.date 
+                f.date,
+                f.lang_id
             FROM __feedbacks f 
             WHERE 
                 1
@@ -71,7 +72,8 @@ class Feedbacks extends Okay {
                 f.ip, 
                 f.message,
                 f.processed,
-                f.date
+                f.date,
+                f.lang_id
             FROM __feedbacks f 
             WHERE 
                 1 

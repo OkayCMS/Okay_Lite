@@ -530,6 +530,9 @@ private function receive_uploaded_files() {
 	$this->logDebug('receive_uploaded_files', 'Entering POST management');
 
 	if (session_id() == '') {
+		if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+			session_name(md5($_SERVER['HTTP_USER_AGENT']));
+		}
 		session_start();
 	}
 	// we check for the session *after* handling possible error log
@@ -728,6 +731,9 @@ private function page_start() {
 		$this->logDebug('page_start', 'Entering GET management');
 
 		if (session_id() == '') {
+			if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+				session_name(md5($_SERVER['HTTP_USER_AGENT']));
+			}
 			session_start();
 		}
 		if (isset($_GET['afterupload'])) {

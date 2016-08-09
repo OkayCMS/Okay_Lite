@@ -121,7 +121,7 @@ class View extends Okay {
                 $page_url = trim(substr($page_url, strlen($strlen)),"/");
             }
 
-            if($_GET['page_url'] == 'all-products'){
+            if (in_array($_GET['page_url'], array('all-products', 'discounted', 'bestsellers'))) {
                 $page_url = $_GET['page_url'];
             }
             $this->design->assign('language', $this->language);
@@ -136,10 +136,6 @@ class View extends Okay {
                 $this->design->assign('translate_id', $t_id);
             }
 
-            
-            if (preg_match('~all-products/page-[0-9]+/?$~', $page_url)) {
-                $page_url = preg_replace('~/page-[0-9]+/?$~', '', $page_url);
-            }
             $this->page = $this->pages->get_page((string)$page_url);
             $this->design->assign('page', $this->page);
             

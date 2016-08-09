@@ -2,6 +2,9 @@
 
 	header("Content-type: image/jpeg");
 
+	if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+		session_name(md5($_SERVER['HTTP_USER_AGENT']));
+	}
 	session_start();
 
 // image config

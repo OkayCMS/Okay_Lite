@@ -152,6 +152,7 @@ class IndexAdmin extends Okay {
                 $l = reset($languages);
                 $_SESSION['admin_lang_id'] = $l->id;
             }
+            $this->design->assign('current_language', $languages[$_SESSION['admin_lang_id']]);
             $this->languages->set_lang_id($_SESSION['admin_lang_id']);
         }
         

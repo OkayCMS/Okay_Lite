@@ -5,6 +5,10 @@
 		{$canonical="/catalog/{$category->url}" scope=parent}
 	{elseif $brand}
 		{$canonical="/brands/{$brand->url}" scope=parent}
+    {elseif $page->url=='discounted'}
+        {$canonical="/discounted" scope=parent}
+    {elseif $page->url=='bestsellers'}
+        {$canonical="/bestsellers" scope=parent}
 	{elseif $keyword}
 		{$canonical="/all-products?keyword={$keyword|escape}" scope=parent}
 	{else}

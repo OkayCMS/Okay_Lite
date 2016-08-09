@@ -425,7 +425,15 @@ $(function(){
 </script>
 {/literal}
 
-{if $languages}{include file='include_languages.tpl'}{/if}
+<div id="compact_languages_block">
+    <div class="helper_wrap" style="margin-left: -6px">
+        <a class="top_help" id="show_help_search" href="https://www.youtube.com/watch?v=5vO7uMwM9VA" target="_blank"></a>
+        <div class="right helper_block topvisor_help">
+            <p>Видеоинструкция по разделу</p>
+        </div>
+    </div>
+    {if $languages}{include file='include_languages.tpl'}{/if}
+</div>
 
 {if $message_success}
 <div class="message message_success">
