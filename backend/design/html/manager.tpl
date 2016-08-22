@@ -103,8 +103,7 @@ $(function() {
 					'delivery'   =>'Способы доставки',
 					'payment'    =>'Способы оплаты',
 					'managers'   =>'Менеджеры',
-					'languages'  =>'Языки',
-					'license'    =>'Управление лицензией'
+					'languages'  =>'Языки'
 				]}
 				
 				{foreach $perms as $p=>$name}

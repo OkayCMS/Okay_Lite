@@ -14,11 +14,6 @@
     <li>
         <a href="index.php?module=ImagesAdmin">Изображения</a>
     </li>
-    {if in_array('robots', $manager->permissions)}
-        <li>
-            <a href="index.php?module=RobotsAdmin">Robots.txt</a>
-        </li>
-    {/if}
 {/capture}
 
 {if $script_file}

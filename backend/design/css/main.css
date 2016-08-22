@@ -693,3 +693,10 @@ input[name*="check"]:checked + label{
 .disabled_menu:hover span{
     background-position: 115px -17px;
 }
+.id_currency{
+    width: 80px;
+}
+.id_currency input{
+    width: 30px;
+    text-align: center;
+}

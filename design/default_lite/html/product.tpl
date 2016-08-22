@@ -244,7 +244,7 @@
                             {comments_tree comments=$comments}
 						{else}
 							<div class="text-muted m-b-1">
-								<span data-language="{$translate_id['cart_header']}">{$lang->product_no_comments}</span>
+								<span data-language="{$translate_id['product_no_comments']}">{$lang->product_no_comments}</span>
 							</div>
 						{/if}
 					</div>

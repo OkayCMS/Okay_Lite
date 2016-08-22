@@ -137,7 +137,7 @@
 			</div>
 			<div class="icons cell products">
 				<a class="preview"   title="Предпросмотр в новом окне" href="../{$lang_link}products/{$product->url}" target="_blank"></a>
-				<a class="enable"    title="Активен"                 href="#"></a>
+				<a class="enable"    title="Активность"                 href="#"></a>
 				<a class="featured"  title="Хит продаж"           href="#"></a>
 				<a class="duplicate" title="Дублировать"             href="#"></a>
 				<a class="delete"    title="Удалить"                 href="#"></a>
