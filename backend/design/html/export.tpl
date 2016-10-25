@@ -1,6 +1,11 @@
 {capture name=tabs}
 	{if in_array('import', $manager->permissions)}<li><a href="index.php?module=ImportAdmin">Импорт</a></li>{/if}
 	<li class="active"><a href="index.php?module=ExportAdmin">Экспорт</a></li>
+    {if in_array('import', $manager->permissions)}
+        <li>
+            <a href="index.php?module=ImportLogAdmin">Лог импорта</a>
+        </li>
+    {/if}
 {/capture}
 {$meta_title='Экспорт товаров' scope=parent}
 

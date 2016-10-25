@@ -58,7 +58,7 @@
                                                 <a href="{url module=CategoryAdmin id=$category->id return=$smarty.server.REQUEST_URI}">
                                                     <img src="{$category->image|resize:35:35:false:$config->resized_categories_dir}" alt="" /></a>
                                                 {else}
-                                                <img height="35" width="35" src="/backend/design/images/no_image.png"/>                                            {/if}
+                                                <img height="35" width="35" src="design/images/no_image.png"/>                                            {/if}
                                         </div>
                                         <div class="cell categ_name">
                                             <a href="{url module=CategoryAdmin id=$category->id return=$smarty.server.REQUEST_URI}">{$category->name|escape}</a>

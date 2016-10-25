@@ -38,7 +38,7 @@ class IndexAdmin extends Okay {
         
         'ImportAdmin'         => 'auto',
         'ExportAdmin'         => 'auto',
-
+        'ImportLogAdmin'      => 'auto',
         
         'ThemeAdmin'          => 'design',
         'StylesAdmin'         => 'design',
@@ -89,6 +89,7 @@ class IndexAdmin extends Okay {
         'FeedbacksAdmin'      => 'feedbacks',
         'ImportAdmin'         => 'import',
         'ExportAdmin'         => 'export',
+        'ImportLogAdmin'      => 'import',
         'ThemeAdmin'          => 'design',
         'StylesAdmin'         => 'design',
         'TemplatesAdmin'      => 'design',

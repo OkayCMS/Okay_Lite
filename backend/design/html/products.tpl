@@ -101,7 +101,7 @@
                         <a href="{url module=ProductAdmin id=$product->id return=$smarty.server.REQUEST_URI}">
                             <img src="{$image->filename|escape|resize:35:35}"/></a>
                     {else}
-                        <img height="35" width="35" src="../design/{$settings->theme|escape}/images/no_image.png"/>
+                        <img height="35" width="35" src="design/images/no_image.png"/>
 
                     {/if}
                 </div>

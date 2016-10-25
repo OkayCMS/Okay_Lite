@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `s_categories` (
 INSERT INTO `s_categories` (`id`, `parent_id`, `name`, `name_h1`, `yandex_name`, `meta_title`, `meta_keywords`, `meta_description`, `annotation`, `description`, `url`, `image`, `position`, `visible`, `external_id`, `level_depth`, `last_modify`) VALUES
 (2, 7, 'Мебель и интерьер', '', '', 'Мебель и интерьер', 'Мебель и интерьер', 'Мебель и интерьер', '', '', 'furniture-and-interior', '', 3, 1, '', 2, '2015-12-25 12:01:06'),
 (3, 7, 'Строительные инструменты', '', '', 'Строительные инструменты', 'Строительные инструменты', 'Строительные инструменты', '', '', 'construction-tools', '', 4, 1, '', 2, '2015-12-25 12:01:16'),
-(4, 0, 'Телефония', '', '', 'Телефония', 'Телефония', 'Телефония', '', '', 'telephony', '', 5, 1, '', 1, '2015-12-25 11:59:39'),
+(4, 0, 'Телефония', '', '', 'Телефония', 'Телефония', 'Телефония', '', '', 'telephony', '', 5, 0, '', 1, '2016-10-25 16:14:55'),
 (6, 0, 'С переводом', '', '', 'С переводом', 'С переводом', 'С переводом', '', '', 'translated', '', 7, 1, '', 1, '2015-12-25 11:59:39'),
 (7, 0, 'Большая', '', '', 'Большая', 'Большая', 'Большая', '', '', 'big', '', 8, 1, '', 1, '2015-12-25 11:59:39'),
 (17, 0, 'Пять уровней вложенности', '', '', 'Пять уровней вложенности', 'Пять уровней вложенности', 'Пять уровней вложенности', '', '', 'five-levels-of-nesting', '', 18, 1, '', 1, '2015-12-25 11:59:39'),
@@ -90,7 +90,7 @@ INSERT INTO `s_categories` (`id`, `parent_id`, `name`, `name_h1`, `yandex_name`,
 (21, 20, 'Пятый уровень вложенности', '', '', 'Пятый уровень вложенности', 'Пятый уровень вложенности', 'Пятый уровень вложенности', '', '', 'fifth-level-of-nesting', '', 22, 1, '', 5, '2016-03-11 15:34:26'),
 (22, 0, 'Женская одежда', '', '', 'Женская одежда', 'Женская одежда', 'Женская одежда', '', '', 'womens-clothing', '', 23, 1, '', 1, '2015-12-25 11:59:39'),
 (23, 22, 'Нижнее бельё', '', '', 'Нижнее бельё', 'Нижнее бельё', 'Нижнее бельё', '', '', 'underwear', '', 24, 1, '', 2, '2016-04-25 10:06:03'),
-(24, 0, 'Детские товары', '', '', 'Детские товары', 'Детские товары', 'Детские товары', '', '', 'baby-products', '', 1, 0, '', 1, '2016-06-29 11:40:08');
+(24, 0, 'Детские товары', '', '', 'Детские товары', 'Детские товары', 'Детские товары', '', '', 'baby-products', '', 1, 1, '', 1, '2016-10-25 16:14:18');
 
 DROP TABLE IF EXISTS `s_categories_features`;
 CREATE TABLE IF NOT EXISTS `s_categories_features` (
@@ -540,6 +540,18 @@ INSERT INTO `s_images` (`id`, `name`, `product_id`, `filename`, `position`) VALU
 (265, '', 147, '94-169.jpg', 3),
 (266, '', 147, '94-170.jpg', 4);
 
+DROP TABLE IF EXISTS `s_import_log`;
+CREATE TABLE IF NOT EXISTS `s_import_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `status` varchar(8) NOT NULL DEFAULT '',
+  `product_name` varchar(255) NOT NULL DEFAULT '',
+  `variant_name` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `status` (`status`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `s_languages`;
 CREATE TABLE IF NOT EXISTS `s_languages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -559,7 +571,7 @@ CREATE TABLE IF NOT EXISTS `s_languages` (
 
 INSERT INTO `s_languages` (`id`, `name`, `label`, `enabled`, `position`, `name_ru`, `name_uk`, `name_by`, `name_en`, `name_ch`, `name_de`, `name_fr`) VALUES
 (1, 'Русский', 'ru', 1, 1, 'Русский', 'Росийська', 'Русский', 'Russian', 'Русский', 'Русский', 'Русский'),
-(2, 'Английский', 'en', 1, 2, 'Английский', 'Английська', 'Английский', 'English', 'Английский', 'Английский', 'Английский'),
+(2, 'Английский', 'en', 0, 2, 'Английский', 'Английська', 'Английский', 'English', 'Английский', 'Английский', 'Английский'),
 (3, 'Украинский', 'uk', 0, 3, 'Украинский', 'Украинська', 'Украинский', 'Ukrainian', 'Украинский', 'Украинский', 'Украинский');
 
 DROP TABLE IF EXISTS `s_lang_blog`;

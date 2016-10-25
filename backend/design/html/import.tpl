@@ -1,6 +1,9 @@
 {capture name=tabs}
 	<li class="active"><a href="index.php?module=ImportAdmin">Импорт</a></li>
 	{if in_array('export', $manager->permissions)}<li><a href="index.php?module=ExportAdmin">Экспорт</a></li>{/if}
+    <li>
+        <a href="index.php?module=ImportLogAdmin">Лог импорта</a>
+    </li>
 {/capture}
 {$meta_title='Импорт товаров' scope=parent}
 
@@ -8,16 +11,11 @@
 <script>
 {if $filename}
     {literal}
-
-        var in_process=false;
-        var count=1;
-
         // On document load
         $(function(){
             Piecon.setOptions({fallback: 'force'});
             Piecon.setProgress(0);
             $("#progressbar").progressbar({ value: 1 });
-            in_process=true;
             do_import();
         });
 
@@ -44,11 +42,6 @@
                             $('#import_error').html(error);
                             $('#import_error').show();
                         } else {
-                            for (var key in data.items) {
-                                $('ul#import_result').prepend('<li><span class=count>' + count + '</span> <span title=' + data.items[key].status + ' class="status ' + data.items[key].status + '"></span> <a target=_blank href="index.php?module=ProductAdmin&id=' + data.items[key].product.id + '">' + data.items[key].product.name + '</a> ' + data.items[key].variant.name + '</li>');
-                                count++;
-                            }
-
                             Piecon.setProgress(Math.round(100 * data.from / data.totalsize));
                             $("#progressbar").progressbar({value: 100 * data.from / data.totalsize});
 
@@ -57,7 +50,7 @@
                             } else {
                                 Piecon.setProgress(100);
                                 $("#progressbar").hide('fast');
-                                in_process = false;
+                                $("#import_result").show();
                             }
                         }
                     },
@@ -104,7 +97,9 @@
 		<h1>Импорт {$filename|escape}</h1>
 	</div>
 	<div id='progressbar'></div>
-	<ul id='import_result'></ul>
+        <div id='import_result' style="display: none; clear: left;">
+            <a href="index.php?module=ImportLogAdmin" target="_blank">Лог последнего импорта</a>
+        </div>
 	{else}
 	
 		<h1>Импорт товаров</h1>
