@@ -133,7 +133,7 @@ $(function() {
 
     $('.answer').click(function() {
         $('input[name="parent_id"]').val($(this).data('parent_id'));
-        $('#comment_answer textarea').html($(this).parent().find('.comment_name').data('email_name')+',');
+        $('#comment_answer textarea').text($(this).parent().find('.comment_name').data('email_name')+',');
     });
     $('.answer').fancybox();
 

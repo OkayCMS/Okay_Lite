@@ -31,6 +31,7 @@ class Okay {
 		'managers'   => 'Managers',
 		'languages'  => 'Languages',
 		'translations'  => 'Translations'
+	    ,'validate'  => 'Validate'
         
 	);
     
