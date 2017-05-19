@@ -1,6 +1,6 @@
 <?php
-if (!empty($_SERVER['HTTP_USER_AGENT'])) {
-	session_name(md5($_SERVER['HTTP_USER_AGENT']));
+if(!empty($_SERVER['HTTP_USER_AGENT'])){
+    session_name(md5($_SERVER['HTTP_USER_AGENT']));
 }
 session_start();
 mb_internal_encoding('UTF-8');

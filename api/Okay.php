@@ -30,9 +30,19 @@ class Okay {
 		'notify'     => 'Notify',
 		'managers'   => 'Managers',
 		'languages'  => 'Languages',
-		'translations'  => 'Translations'
-	    ,'validate'  => 'Validate'
-        
+		'translations'  => 'Translations',
+        'comparison'   => 'Comparison',
+        'subscribes' => 'Subscribes',
+        'banners'	 => 'Banners',
+        'callbacks'  => 'Callbacks'
+        /*statistic*/
+        ,'reportstat' => 'ReportStat'
+        /*statistic*/
+        ,'validate'  => 'Validate'
+        ,'orderlabels'    => 'OrderLabels'
+        ,'orderstatus'    => 'OrderStatus'
+		,'supportinfo'=> 'SupportInfo'
+		,'support'   => 'Support'
 	);
     
 	private static $objects = array();

@@ -24,7 +24,7 @@ class LoginView extends View {
                     // Генерируем секретный код и запишем в базу с датой до которой он будет активен (+5 минут от текущей)
                     $code = md5(uniqid($this->config->salt, true));
                     $this->users->update_user($user->id, array('remind_code'=>$code, 'remind_expire'=>date('Y-m-d H:i:s', time()+300)));
-                    
+
                     // Отправляем письмо пользователю для восстановления пароля
                     $this->notify->email_password_remind($user->id, $code);
                     $this->design->assign('email_sent', true);
@@ -59,15 +59,11 @@ class LoginView extends View {
             
             if($user_id = $this->users->check_password($email, $password)) {
                 $user = $this->users->get_user($email);
-                if($user->enabled) {
-                    $_SESSION['user_id'] = $user_id;
-                    $this->users->update_user($user_id, array('last_ip'=>$_SERVER['REMOTE_ADDR']));
-                    
-                    // Перенаправляем пользователя в личный кабинет
-                    header('Location: '.$this->config->root_url.'/'.$this->lang_link.'user');
-                } else {
-                    $this->design->assign('error', 'user_disabled');
-                }
+                $_SESSION['user_id'] = $user_id;
+                $this->users->update_user($user_id, array('last_ip'=>$_SERVER['REMOTE_ADDR']));
+
+                // Перенаправляем пользователя в личный кабинет
+                header('Location: '.$this->config->root_url.'/'.$this->lang_link.'user');
             } else {
                 $this->design->assign('error', 'login_incorrect');
             }

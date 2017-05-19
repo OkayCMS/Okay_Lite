@@ -15,7 +15,8 @@ class BlogView extends View {
     
     private function fetch_post($url) {
         // Выбираем пост из базы
-        $post = $this->blog->get_post($url);
+        $type_post = $this->request->get('type_post');
+        $post = $this->blog->get_post($url, $type_post);
         
         // Если не найден - ошибка
         if(!$post || (!$post->visible && empty($_SESSION['admin']))) {
@@ -43,9 +44,9 @@ class BlogView extends View {
             $this->design->assign('comment_text', $comment->text);
             $this->design->assign('comment_name', $comment->name);
             $this->design->assign('comment_email', $comment->email);
-
+            
             // Проверяем капчу и заполнение формы
-            if ($this->settings->captcha_post && ($_SESSION['captcha_code'] != $captcha_code || empty($captcha_code))) {
+            if ($this->settings->captcha_post && ($_SESSION['captcha_post'] != $captcha_code || empty($captcha_code))) {
                 $this->design->assign('error', 'captcha');
             } elseif (!$this->validate->is_name($comment->name, true)) {
                 $this->design->assign('error', 'empty_name');
@@ -56,31 +57,57 @@ class BlogView extends View {
             } else {
                 // Создаем комментарий
                 $comment->object_id = $post->id;
-                $comment->type      = 'blog';
+                $comment->type      = $post->type_post;
                 $comment->ip        = $_SERVER['REMOTE_ADDR'];
                 $comment->lang_id   = $_SESSION['lang_id'];
-                
-                // Если были одобренные комментарии от текущего ip, одобряем сразу
-                $this->db->query("SELECT 1 FROM __comments WHERE approved=1 AND ip=? LIMIT 1", $comment->ip);
-                if($this->db->num_rows()>0)
-                	$comment->approved = 1;
-                
                 // Добавляем комментарий в базу
                 $comment_id = $this->comments->add_comment($comment);
-                
                 // Отправляем email
                 $this->notify->email_comment_admin($comment_id);
-                
-                // Приберем сохраненную капчу, иначе можно отключить загрузку рисунков и постить старую
-                unset($_SESSION['captcha_code']);
+
                 header('location: '.$_SERVER['REQUEST_URI'].'#comment_'.$comment_id);
             }
         }
+
+        // Связанные товары
+        $related_ids = array();
+        $related_products = array();
+        foreach($this->blog->get_related_products(array('post_id'=>$post->id)) as $p) {
+            $related_ids[] = $p->related_id;
+            $related_products[$p->related_id] = null;
+        }
+        if(!empty($related_ids)) {
+            foreach($this->products->get_products(array('id'=>$related_ids, 'visible'=>1)) as $p) {
+                $related_products[$p->id] = $p;
+            }
+
+            $related_products_images = $this->products->get_images(array('product_id'=>array_keys($related_products)));
+            foreach($related_products_images as $related_product_image) {
+                if(isset($related_products[$related_product_image->product_id])) {
+                    $related_products[$related_product_image->product_id]->images[] = $related_product_image;
+                }
+            }
+            $related_products_variants = $this->variants->get_variants(array('product_id'=>array_keys($related_products)));
+            foreach($related_products_variants as $related_product_variant) {
+                if(isset($related_products[$related_product_variant->product_id])) {
+                    $related_products[$related_product_variant->product_id]->variants[] = $related_product_variant;
+                }
+            }
+            foreach($related_products as $id=>$r) {
+                if(is_object($r)) {
+                    $r->image = $r->images[0];
+                    $r->variant = $r->variants[0];
+                } else {
+                    unset($related_products[$id]);
+                }
+            }
+            $this->design->assign('related_products', $related_products);
+        }
         
         // Комментарии к посту
-        $comments = $this->comments->get_comments(array('has_parent'=>false, 'type'=>'blog', 'object_id'=>$post->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR']));
+        $comments = $this->comments->get_comments(array('has_parent'=>false, 'type'=>$post->type_post, 'object_id'=>$post->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR']));
         $children = array();
-        foreach ($this->comments->get_comments(array('has_parent'=>true, 'type'=>'blog', 'object_id'=>$post->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR'])) as $c) {
+        foreach ($this->comments->get_comments(array('has_parent'=>true, 'type'=>$post->type_post, 'object_id'=>$post->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR'])) as $c) {
             $children[$c->parent_id][] = $c;
         }
         $this->design->assign('comments', $comments);
@@ -116,6 +143,9 @@ class BlogView extends View {
         
         // Выбираем только видимые посты
         $filter['visible'] = 1;
+        if($this->request->get('type_post')) {
+            $filter['type_post'] = $this->request->get('type_post');
+        }
         
         // Текущая страница в постраничном выводе
         $current_page = $this->request->get('page', 'integer');

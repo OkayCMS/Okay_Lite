@@ -7,6 +7,7 @@ class ExportAjax extends Okay {
         'name'=>             'Товар',
         'price'=>            'Цена',
         'currency'=>         'ID валюты',
+        'weight'=>           'Вес варианта',
         'url'=>              'Адрес',
         'visible'=>          'Видим',
         'featured'=>         'Рекомендуемый',
@@ -19,7 +20,7 @@ class ExportAjax extends Okay {
         'meta_keywords'=>    'Ключевые слова',
         'meta_description'=> 'Описание страницы',
         'annotation'=>       'Аннотация',
-        'body'=>             'Описание',
+        'description'=>             'Описание',
         'images'=>           'Изображения'
         
     );
@@ -65,10 +66,18 @@ class ExportAjax extends Okay {
         if($page == 1) {
             fputcsv($f, $this->columns_names, $this->column_delimiter);
         }
-        
+
+        $filter = array('page'=>$page, 'limit'=>$this->products_count);
+        if (($cid = $this->request->get('category_id', 'integer')) && ($category = $this->categories->get_category($cid))) {
+            $filter['category_id'] = $category->children;
+        }
+        if ($brand_id = $this->request->get('brand_id', 'integer')) {
+            $filter['brand_id'] = $brand_id;
+        }
+
         // Все товары
         $products = array();
-        foreach($this->products->get_products(array('page'=>$page, 'limit'=>$this->products_count)) as $p) {
+        foreach($this->products->get_products($filter) as $p) {
             $products[$p->id] = (array)$p;
             
             // Свойства товаров
@@ -124,6 +133,7 @@ class ExportAjax extends Okay {
                 $v['compare_price']   = $variant->compare_price;
                 $v['sku']             = $variant->sku;
                 $v['stock']           = $variant->stock;
+                $v['weight']           = $variant->weight;
                 $v['currency']        = $variant->currency_id;
                 if($variant->infinity) {
                     $v['stock']           = '';
@@ -164,7 +174,7 @@ class ExportAjax extends Okay {
             }
         }
         
-        $total_products = $this->products->count_products();
+        $total_products = $this->products->count_products($filter);
         fclose($f);
         if($this->products_count*$page < $total_products) {
             return array('end'=>false, 'page'=>$page, 'totalpages'=>$total_products/$this->products_count);

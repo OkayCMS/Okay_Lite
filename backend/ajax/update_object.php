@@ -6,6 +6,7 @@ if(!$okay->request->check_session()) {
     exit();
 }
 
+$result = '';
 $id = intval($okay->request->post('id'));
 $object = $okay->request->post('object');
 $values = $okay->request->post('values');
@@ -81,44 +82,31 @@ switch ($object) {
             $result = $okay->languages->update_language($id, $values);
         }
         break;
-    case 'category_yandex':
-    	if($okay->managers->access('products')) {
-            $category = $okay->categories->get_category($id);
-            $q = $okay->db->placehold("select v.id from __categories c"
-                ." right join __products_categories pc on c.id=pc.category_id"
-                ." right join __variants v on v.product_id=pc.product_id"
-                ." where c.id in(?@)", $category->children);
-            $okay->db->query($q);
-            $vids = $okay->db->results('id');
-            if (count($vids) == 0) {
-                $result = -1;
-                break;
-            }
-            $q = $okay->db->placehold("update __variants set yandex=? where id in(?@)", (int)$values['to_yandex'], $vids);
-            $result = (bool)$okay->db->query($q);
-    	}
+    case 'banner':
+        if($okay->managers->access('banners')) {
+            $result = $okay->banners->update_banner($id, $values);
+        }
         break;
-    case 'brand_yandex':
-    	if($okay->managers->access('products')) {
-            $q = $okay->db->placehold("select v.id from __products p"
-                ." left join __variants v on v.product_id=p.id"
-                ." where p.brand_id in(?@)", array($id));
-            $okay->db->query($q);
-            $vids = $okay->db->results('id');
-            if (count($vids) == 0) {
-                $result = -1;
-                break;
-            }
-            $q = $okay->db->placehold("update __variants set yandex=? where id in(?@)", (int)$values['to_yandex'], $vids);
-            $result = (bool)$okay->db->query($q);
-    	}
+	case 'banners_image':
+        if($okay->managers->access('banners')) {
+            $result = $okay->banners->update_banners_image($id, $values);
+        }
+        break;
+    case 'callback':
+        if($okay->managers->access('callbacks')) {
+            $result = $okay->callbacks->update_callback($id, $values);
+        }
         break;
     case 'feedback':
         if($okay->managers->access('feedbacks')) {
             $result = $okay->feedbacks->update_feedback($id, $values);
         }
         break;
-    
+    case 'managers':
+        if($okay->managers->access('managers')) {
+            $result = $okay->managers->update_manager($id, $values);
+        }
+        break;
 }
 
 header("Content-type: application/json; charset=UTF-8");

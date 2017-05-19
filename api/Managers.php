@@ -4,9 +4,10 @@ require_once('Okay.php');
 
 class Managers extends Okay {
     
-    public $permissions_list = array('products', 'categories', 'brands', 'features', 'orders',
+    public $permissions_list = array('products', 'categories', 'brands', 'features', 'orders', 'order_settings',
         'users', 'groups', 'coupons', 'pages', 'blog', 'comments', 'feedbacks', 'import', 'export',
-        'design', 'settings', 'currency', 'delivery', 'payment', 'managers', 'languages'
+        'stats', 'design', 'settings', 'currency', 'delivery', 'payment', 'managers', 'license', 'languages',
+        'banners', 'special', 'callbacks','yametrika','robots', 'seo_patterns', 'support'
         
     );
 
@@ -68,7 +69,27 @@ class Managers extends Okay {
         }
         return false;
     }
-
+    
+    public function add_manager($manager) {
+        $manager = (object)$manager;
+        if(!empty($manager->password)) {
+            // захешировать пароль
+            $manager->password = $this->crypt_apr1_md5($manager->password);
+        }
+        if(is_array($manager->permissions)) {
+            if(count(array_diff($this->permissions_list, $manager->permissions))>0) {
+                $manager->permissions = implode(",", $manager->permissions);
+            } else {
+                // все права
+                $manager->permissions = null;
+            }
+        }
+        $this->db->query("INSERT INTO __managers SET ?%", $manager);
+        $id = $this->db->insert_id();
+        $this->init_managers();
+        return $id;
+    }
+    
     public function update_manager($id, $manager) {
         $manager = (object)$manager;
         if(!empty($manager->password)) {

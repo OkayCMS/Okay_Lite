@@ -19,7 +19,8 @@ class Products extends Okay {
         $is_featured_filter = '';
         $discounted_filter = '';
         $in_stock_filter = '';
-        $yandex_filter = '';
+        $has_images_filter = '';
+        $feed_filter = '';
         $group_by = '';
         $order = 'p.position DESC';
         
@@ -58,11 +59,15 @@ class Products extends Okay {
         }
         
         if(isset($filter['in_stock'])) {
-            $in_stock_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND pv.price>0 AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = ?', intval($filter['in_stock']));
+            $in_stock_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = ?', intval($filter['in_stock']));
+        }
+
+        if(isset($filter['has_images'])) {
+            $has_images_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __images pi WHERE pi.product_id=p.id LIMIT 1) = ?', intval($filter['has_images']));
         }
         
-        if(isset($filter['yandex'])) {
-            $yandex_filter = $this->db->placehold('inner join __variants v on v.product_id=p.id and v.yandex=?', intval($filter['yandex']));
+        if(isset($filter['feed'])) {
+            $feed_filter = $this->db->placehold('inner join __variants v on v.product_id=p.id and v.feed=?', intval($filter['feed']));
         }
         $price_filter = '';
         $variant_join = '';
@@ -113,7 +118,7 @@ class Products extends Okay {
                 case 'price':
                     $order = "(SELECT -floor(IF(pv.currency_id=0 OR c.id is null,pv.price, pv.price*c.rate_to/c.rate_from)*$coef) 
                         FROM __variants pv 
-                        LEFT JOIN s_currencies c on c.id=pv.currency_id 
+                        LEFT JOIN __currencies c on c.id=pv.currency_id
                         WHERE 
                             p.id = pv.product_id 
                             AND pv.position=(SELECT MIN(position) 
@@ -126,7 +131,7 @@ class Products extends Okay {
                 case 'price_desc':
                     $order = "(SELECT -floor(IF(pv.currency_id=0 OR c.id is null,pv.price, pv.price*c.rate_to/c.rate_from)*$coef)
                         FROM __variants pv
-                        LEFT JOIN s_currencies c on c.id=pv.currency_id
+                        LEFT JOIN __currencies c on c.id=pv.currency_id
                         WHERE
                             p.id = pv.product_id
                             AND pv.position=(SELECT MIN(position)
@@ -177,7 +182,7 @@ class Products extends Okay {
             $category_id_filter
             $variant_join
             $currency_join
-            $yandex_filter
+            $feed_filter
             WHERE
                 1
                 $product_id_filter
@@ -187,6 +192,7 @@ class Products extends Okay {
                 $is_featured_filter
                 $discounted_filter
                 $in_stock_filter
+                $has_images_filter
                 $visible_filter
                 $price_filter
                 $group_by
@@ -221,7 +227,8 @@ class Products extends Okay {
         $visible_filter = '';
         $is_featured_filter = '';
         $in_stock_filter = '';
-        $yandex_filter = '';
+        $has_images_filter = '';
+        $feed_filter = '';
         $discounted_filter = '';
         $features_filter = '';
         
@@ -259,11 +266,15 @@ class Products extends Okay {
         }
         
         if(isset($filter['in_stock'])) {
-            $in_stock_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND pv.price>0 AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = ?', intval($filter['in_stock']));
+            $in_stock_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = ?', intval($filter['in_stock']));
+        }
+
+        if(isset($filter['has_images'])) {
+            $has_images_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __images pi WHERE pi.product_id=p.id LIMIT 1) = ?', intval($filter['has_images']));
         }
         
-        if(isset($filter['yandex'])) {
-            $yandex_filter = $this->db->placehold('inner join __variants v on v.product_id=p.id and v.yandex=?', intval($filter['yandex']));
+        if(isset($filter['feed'])) {
+            $feed_filter = $this->db->placehold('inner join __variants v on v.product_id=p.id and v.feed=?', intval($filter['feed']));
         }
         $price_filter = '';
         $variant_join = '';
@@ -314,7 +325,7 @@ class Products extends Okay {
             FROM __products AS p
             $lang_sql->join
             $category_id_filter
-            $yandex_filter
+            $feed_filter
             $variant_join
             $currency_join
             WHERE 
@@ -324,6 +335,7 @@ class Products extends Okay {
                 $keyword_filter
                 $is_featured_filter
                 $in_stock_filter
+                $has_images_filter
                 $discounted_filter
                 $visible_filter
                 $features_filter
@@ -733,4 +745,51 @@ class Products extends Okay {
             }
         }
     }
+
+    public function get_spec_images() {
+        $query = $this->db->placehold("SELECT id, filename, position FROM __spec_img ORDER BY position ASC");
+        $this->db->query($query);
+        $res = $this->db->results();
+        if(!empty($res)){
+            return $res;
+        } else {
+            return array();
+        }
+    }
+
+    public function delete_spec_image($image_id) {
+        if(empty($image_id)){
+            return false;
+        }
+        $query = $this->db->placehold("SELECT filename FROM __spec_img WHERE id =?", intval($image_id));
+        $this->db->query($query);
+        $filename = $this->db->result('filename');
+        unlink($this->config->root_dir.$this->config->special_images_dir.$filename);
+        $this->db->query("DELETE FROM __spec_img WHERE id=? LIMIT 1", intval($image_id));
+        $this->db->query("UPDATE __products SET special=NULL WHERE special=?", $filename);
+        $this->db->query("UPDATE __lang_products SET special=NULL WHERE special=?", $filename);
+        return true;
+    }
+
+
+    public function update_spec_images($id, $spec_image){
+        if(empty($id) || empty($spec_image)){
+            return false;
+        }
+        $spec_image = (array)$spec_image;
+        $query = $this->db->placehold("UPDATE __spec_img SET ?% WHERE id=?", $spec_image, $id);
+        $this->db->query($query);
+        return $id;
+    }
+    public function add_spec_image($image) {
+        if(empty($image)){
+            return false;
+        }
+        $query = $this->db->query("INSERT INTO __spec_img SET filename = ?", $image);
+        $this->db->query($query);
+        $id = $this->db->insert_id();
+        $this->db->query("UPDATE __spec_img SET position=id WHERE id=?", $id);
+        return $id;
+    }
+
 }

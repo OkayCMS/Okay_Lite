@@ -29,7 +29,7 @@ class ProductView extends View {
                 }
             }
         }
-
+        
         $variants = array();
         foreach($this->variants->get_variants(array('product_id'=>$product->id)) as $v) {
             $variants[$v->id] = $v;
@@ -64,9 +64,9 @@ class ProductView extends View {
             $this->design->assign('comment_text', $comment->text);
             $this->design->assign('comment_name', $comment->name);
             $this->design->assign('comment_email', $comment->email);
-
+            
             // Проверяем капчу и заполнение формы
-            if ($this->settings->captcha_product && ($_SESSION['captcha_code'] != $captcha_code || empty($captcha_code))) {
+            if ($this->settings->captcha_product && ($_SESSION['captcha_product'] != $captcha_code || empty($captcha_code))) {
                 $this->design->assign('error', 'captcha');
             } elseif (!$this->validate->is_name($comment->name, true)) {
                 $this->design->assign('error', 'empty_name');
@@ -80,21 +80,13 @@ class ProductView extends View {
                 $comment->type      = 'product';
                 $comment->ip        = $_SERVER['REMOTE_ADDR'];
                 $comment->lang_id   = $_SESSION['lang_id'];
-                
-                // Если были одобренные комментарии от текущего ip, одобряем сразу
-                $this->db->query("SELECT 1 FROM __comments WHERE approved=1 AND ip=? LIMIT 1", $comment->ip);
-                if($this->db->num_rows()>0) {
-                    $comment->approved = 1;
-                }
-                
+
                 // Добавляем комментарий в базу
                 $comment_id = $this->comments->add_comment($comment);
                 
                 // Отправляем email
                 $this->notify->email_comment_admin($comment_id);
-                
-                // Приберем сохраненную капчу, иначе можно отключить загрузку рисунков и постить старую
-                unset($_SESSION['captcha_code']);
+
                 header('location: '.$_SERVER['REQUEST_URI'].'#comment_'.$comment_id);
             }
         }
@@ -133,6 +125,18 @@ class ProductView extends View {
             }
             $this->design->assign('related_products', $related_products);
         }
+
+        //Связянные статьи для товара
+        $related_post = array();
+        $related_post = $this->blog->get_related_products(array('product_id'=>$product->id));
+        if(!empty($related_post)) {
+            $filter_post['visible'] = 1;
+            foreach ($related_post as $r_post) {
+                $filter_post['id'][] = $r_post->post_id;
+            }
+            $posts = $this->blog->get_posts($filter_post);
+            $this->design->assign('related_posts', $posts);
+        }
         
         // Отзывы о товаре
         $comments = $this->comments->get_comments(array('has_parent'=>false, 'type'=>'product', 'object_id'=>$product->id, 'approved'=>1, 'ip'=>$_SERVER['REMOTE_ADDR']));
@@ -145,7 +149,7 @@ class ProductView extends View {
         $this->design->assign('product', $product);
         $this->design->assign('comments', $comments);
         $this->design->assign('children', $children);
-
+        
         // Категория и бренд товара
         $product->categories = $this->categories->get_categories(array('product_id'=>$product->id));
         $this->design->assign('brand', $this->brands->get_brand(intval($product->brand_id)));
@@ -173,11 +177,50 @@ class ProductView extends View {
         $browsed_products[] = $product->id;
         $cookie_val = implode(',', array_slice($browsed_products, -$max_visited_products, $max_visited_products));
         setcookie("browsed_products", $cookie_val, $expire, "/");
+        
+        //Автоматичекска генерация мета тегов и описания товара
+        if (!empty($category)) {
+            $parts = array(
+                '{$category}' => ($category->name ? $category->name : ''),
+                '{$category_h1}' => ($category->name_h1 ? $category->name_h1 : ''),
+                '{$brand}' => ($this->design->get_var('brand') ? $this->design->get_var('brand')->name : ''),
+                '{$product}' => ($product->name ? $product->name : ''),
+                '{$price}' => ($product->variant->price != null ? $this->money->convert($product->variant->price, $this->currency->id, false).' '.$this->currency->sign : ''),
+                '{$sitename}' => ($this->settings->site_name ? $this->settings->site_name : '')
+            );
+            foreach ($product->features as $feature) {
+                if ($feature->auto_name_id) {
+                    $parts['{$'.$feature->auto_name_id.'}'] = $feature->name;
+                }
+                if ($feature->auto_value_id) {
+                    $parts['{$'.$feature->auto_value_id.'}'] = $feature->value;
+                }
+            }
+            
+            $auto_meta_title = ($category->auto_meta_title ? $category->auto_meta_title : $product->meta_title);
+            $auto_meta_keywords = ($category->auto_meta_keywords ? $category->auto_meta_keywords : $product->meta_keywords);
+            $auto_meta_description = ($category->auto_meta_desc ? $category->auto_meta_desc : $product->meta_description);
 
-        $this->design->assign('meta_title', $product->meta_title);
-        $this->design->assign('meta_keywords', $product->meta_keywords);
-        $this->design->assign('meta_description', $product->meta_description);
+            $auto_meta_title = strtr($auto_meta_title, $parts);
+            $auto_meta_keywords = strtr($auto_meta_keywords, $parts);
+            $auto_meta_description = strtr($auto_meta_description, $parts);
+            if (!empty($category->auto_description) && empty($product->description)) {
+                $product->description = strtr($category->auto_description, $parts);
+                $product->description = preg_replace('/\{\$[^\$]*\}/', '', $product->description);
+            }
+            $auto_meta_title = preg_replace('/\{\$[^\$]*\}/', '', $auto_meta_title);
+            $auto_meta_keywords = preg_replace('/\{\$[^\$]*\}/', '', $auto_meta_keywords);
+            $auto_meta_description = preg_replace('/\{\$[^\$]*\}/', '', $auto_meta_description);
 
+            $this->design->assign('meta_title', $auto_meta_title);
+            $this->design->assign('meta_keywords', $auto_meta_keywords);
+            $this->design->assign('meta_description', $auto_meta_description);
+        } else {
+            $this->design->assign('meta_title', $product->meta_title);
+            $this->design->assign('meta_keywords', $product->meta_keywords);
+            $this->design->assign('meta_description', $product->meta_description);
+        }
+        
         return $this->design->fetch('product.tpl');
     }
     

@@ -44,7 +44,7 @@ class Comments extends Okay {
         $keyword_filter = '';
         $approved_filter = '';
         $has_parent_filter = '';
-
+        
         if(isset($filter['limit'])) {
             $limit = max(1, intval($filter['limit']));
         }
@@ -73,7 +73,7 @@ class Comments extends Okay {
         if (isset($filter['has_parent'])) {
             $has_parent_filter = 'and c.parent_id'.($filter['has_parent'] ? '>0' : '=0');
         }
-
+        
         if(!empty($filter['keyword'])) {
             $keywords = explode(' ', $filter['keyword']);
             foreach($keywords as $keyword) {
@@ -121,7 +121,7 @@ class Comments extends Okay {
         $approved_filter = '';
         $keyword_filter = '';
         $has_parent_filter = '';
-
+        
         if(!empty($filter['object_id'])) {
             $object_id_filter = $this->db->placehold('AND c.object_id in(?@)', (array)$filter['object_id']);
         }
@@ -137,7 +137,7 @@ class Comments extends Okay {
         if (isset($filter['has_parent'])) {
             $has_parent_filter = 'and c.parent_id'.($filter['has_parent'] ? '>0' : '=0');
         }
-
+        
         if(!empty($filter['keyword'])) {
             $keywords = explode(' ', $filter['keyword']);
             foreach($keywords as $keyword) {
@@ -223,7 +223,7 @@ class Comments extends Okay {
             foreach($children as $child_id) {
                 $this->delete_comment($child_id);
             }
-
+            
             $query = $this->db->placehold("DELETE FROM __comments WHERE id=? LIMIT 1", intval($id));
             $this->db->query($query);
         }

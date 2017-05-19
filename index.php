@@ -35,7 +35,6 @@ if(($res = $view->fetch()) !== false) {
     $_GET['module'] = 'PageView';
     print $view->fetch();   
 }
-
 // Отладочная информация
 if(1) {
     print "<!--\r\n";
@@ -47,5 +46,4 @@ if(1) {
     }
     print "page generation time: ".$exec_time." seconds\r\n";  
     print "-->";
-    print "<!--OkayCMS Lite-->";
 }

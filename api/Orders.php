@@ -33,7 +33,7 @@ class Orders extends Okay {
                 o.phone, 
                 o.email, 
                 o.comment, 
-                o.status, 
+                o.status_id, 
                 o.url, 
                 o.total_price, 
                 o.note, 
@@ -58,10 +58,12 @@ class Orders extends Okay {
         $limit = 100;
         $page = 1;
         $keyword_filter = '';
+        $label_filter = '';
         $status_filter = '';
         $user_filter = '';
         $modified_since_filter = '';
         $id_filter = '';
+        $date_filter = '';
         
         if(isset($filter['limit'])) {
             $limit = max(1, intval($filter['limit']));
@@ -73,8 +75,8 @@ class Orders extends Okay {
         
         $sql_limit = $this->db->placehold(' LIMIT ?, ? ', ($page-1)*$limit, $limit);
         
-        if(isset($filter['status'])) {
-            $status_filter = $this->db->placehold('AND o.status = ?', intval($filter['status']));
+        if(!empty($filter['status'])) {
+            $status_filter = $this->db->placehold('AND o.status_id = ?', intval($filter['status']));
         }
         
         if(isset($filter['id'])) {
@@ -88,7 +90,10 @@ class Orders extends Okay {
         if(isset($filter['modified_since'])) {
             $modified_since_filter = $this->db->placehold('AND o.modified > ?', $filter['modified_since']);
         }
-
+        
+        if(isset($filter['label'])) {
+            $label_filter = $this->db->placehold('AND ol.label_id = ?', $filter['label']);
+        }
         
         if(!empty($filter['keyword'])) {
             $keywords = explode(' ', $filter['keyword']);
@@ -102,6 +107,20 @@ class Orders extends Okay {
                     OR o.id in (SELECT order_id FROM __purchases WHERE product_name LIKE "%'.$this->db->escape(trim($keyword)).'%" OR variant_name LIKE "%'.$this->db->escape(trim($keyword)).'%")
                 ) ');
             }
+        }
+
+        if(!empty($filter['from_date']) || !empty($filter['to_date'])){
+                if(!empty($filter['from_date'])){
+                    $from = date('Y-m-d',strtotime($filter['from_date']));
+                }else{
+                    $from = '1970-01-01'; /*если стартовой даты нет, берем время с эпохи UNIX*/
+                }
+                if(!empty($filter['to_date'])){
+                    $to = date('Y-m-d',strtotime($filter['to_date']));
+                }else{
+                    $to = date('Y-m-d'); /*если конечной даты нет, берем за дату "сегодня"*/
+                }
+                $date_filter = $this->db->placehold("AND (o.date BETWEEN ? AND ?)",$from,$to);
         }
         
         // Выбираем заказы
@@ -124,21 +143,24 @@ class Orders extends Okay {
                 o.phone, 
                 o.email, 
                 o.comment, 
-                o.status, 
+                o.status_id, 
                 o.url, 
                 o.total_price, 
                 o.note, 
                 o.lang_id
             FROM __orders AS o
+            LEFT JOIN __orders_labels AS ol ON o.id=ol.order_id
             WHERE 
                 1
                 $id_filter 
                 $status_filter 
                 $user_filter 
-                $keyword_filter
+                $keyword_filter 
+                $label_filter 
                 $modified_since_filter
+                $date_filter
             GROUP BY o.id 
-            ORDER BY status, id DESC 
+            ORDER BY o.id DESC
             $sql_limit
         ", "%Y-%m-%d");
         $this->db->query($query);
@@ -151,17 +173,22 @@ class Orders extends Okay {
     
     public function count_orders($filter = array()) {
         $keyword_filter = '';
+        $label_filter = '';
         $status_filter = '';
         $user_filter = '';
+        $date_filter = '';
         
-        if(isset($filter['status'])) {
-            $status_filter = $this->db->placehold('AND o.status = ?', intval($filter['status']));
+        if(!empty($filter['status'])) {
+            $status_filter = $this->db->placehold('AND o.status_id = ?', intval($filter['status']));
         }
         
         if(isset($filter['user_id'])) {
             $user_filter = $this->db->placehold('AND o.user_id = ?', intval($filter['user_id']));
         }
-
+        
+        if(isset($filter['label'])) {
+            $label_filter = $this->db->placehold('AND ol.label_id = ?', $filter['label']);
+        }
         
         if(!empty($filter['keyword'])) {
             $keywords = explode(' ', $filter['keyword']);
@@ -177,21 +204,39 @@ class Orders extends Okay {
             }
         }
 
+        if(!empty($filter['from_date']) || !empty($filter['to_date'])){
+            if(!empty($filter['from_date'])){
+                $from = $filter['from_date'];
+            }else{
+                $from = '1970-01-01'; /*если стартовой даты нет, берем время с эпохи UNIX*/
+            }
+            if(!empty($filter['to_date'])){
+                $to = $filter['to_date'];
+            }else{
+                $to = date('Y-m-d'); /*если конечной даты нет, берем за дату "сегодня"*/
+            }
+            $date_filter = $this->db->placehold("AND (o.date BETWEEN ? AND ?)",$from,$to);
+        }
         
         // Выбираем заказы
         $query = $this->db->placehold("SELECT COUNT(DISTINCT id) as count
             FROM __orders AS o
+            LEFT JOIN __orders_labels AS ol ON o.id=ol.order_id
             WHERE 
                 1
                 $status_filter 
-                $user_filter
+                $user_filter 
+                $label_filter 
                 $keyword_filter
+                $date_filter
         ");
         $this->db->query($query);
         return $this->db->result('count');
     }
     
     public function update_order($id, $order) {
+        $order = (object)$order;
+
         $query = $this->db->placehold("UPDATE __orders SET ?%, modified=now() WHERE id=? LIMIT 1", $order, intval($id));
         $this->db->query($query);
         $this->update_total_price(intval($id));
@@ -202,7 +247,10 @@ class Orders extends Okay {
         if(!empty($id)) {
             $query = $this->db->placehold("DELETE FROM __purchases WHERE order_id=?", $id);
             $this->db->query($query);
-
+            
+            $query = $this->db->placehold("DELETE FROM __orders_labels WHERE order_id=?", $id);
+            $this->db->query($query);
+            
             $query = $this->db->placehold("DELETE FROM __orders WHERE id=? LIMIT 1", $id);
             $this->db->query($query);
         }
@@ -215,13 +263,20 @@ class Orders extends Okay {
         if(empty($order->date)) {
             $set_curr_date = ', date=now()';
         }
+        $all_status = $this->orderstatus->get_status();
+        $order->status_id = reset($all_status)->id;
         $query = $this->db->placehold("INSERT INTO __orders SET ?%$set_curr_date", $order);
         $this->db->query($query);
         $id = $this->db->insert_id();
+        if(reset($all_status)->is_close == 1){
+            $this->orders->close(intval($id));
+        } else {
+            $this->orders->open(intval($id));
+        }
+
         return $id;
     }
 
-    
     public function get_purchase($id) {
         $query = $this->db->placehold("SELECT * FROM __purchases WHERE id=? LIMIT 1", intval($id));
         $this->db->query($query);
@@ -433,33 +488,4 @@ class Orders extends Okay {
         $this->db->query($query);
         return $order->id;
     }
-    
-    public function get_next_order($id, $status = null) {
-        $f = '';
-        if($status!==null) {
-            $f = $this->db->placehold('AND status=?', $status);
-        }
-        $this->db->query("SELECT MIN(id) as id FROM __orders WHERE id>? $f LIMIT 1", $id);
-        $next_id = $this->db->result('id');
-        if($next_id) {
-            return $this->get_order(intval($next_id));
-        } else {
-            return false;
-        }
-    }
-    
-    public function get_prev_order($id, $status = null) {
-        $f = '';
-        if($status !== null) {
-            $f = $this->db->placehold('AND status=?', $status);
-        }
-        $this->db->query("SELECT MAX(id) as id FROM __orders WHERE id<? $f LIMIT 1", $id);
-        $prev_id = $this->db->result('id');
-        if($prev_id) {
-            return $this->get_order(intval($prev_id));
-        } else {
-            return false;
-        }
-    }
-    
 }

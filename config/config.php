@@ -1,6 +1,5 @@
 ;<? exit(); ?>
 
-
 [database]
 
 ;Сервер базы данных
@@ -16,7 +15,7 @@ db_password = ""
 db_name = "okaycmslite-git"
 
 ;Префикс для таблиц
-db_prefix = s_;
+db_prefix = ok_;
 
 ;Кодировка базы данных
 db_charset = UTF8;
@@ -37,8 +36,6 @@ php_locale_monetary = ru_RU;
 php_locale_numeric = ru_RU;
 php_locale_time = ru_RU;
 ;php_timezone = Europe/Moscow;
-
-logfile = admin/log/log.txt;
 
 [smarty]
 
@@ -80,6 +77,12 @@ resized_deliveries_dir = files/deliveries_resized/;
 ;Изображения оригиналов и нарезок фоток способов оплаты
 original_payments_dir = files/payments/;
 resized_payments_dir = files/payments_resized/;
+
+;Изображения баннеров
+banners_images_dir = files/slides/;
+
+;Промо изображения
+special_images_dir = files/special/;
 
 [files]
 

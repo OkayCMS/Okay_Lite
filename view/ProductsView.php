@@ -23,7 +23,8 @@ class ProductsView extends View {
         if (strlen($this->config->subfolder) > 1) {
             $this->subdir = "/?".$this->config->subfolder;
         }
-        
+        $translations = $this->translations->get_translations(array('lang'=>$this->language->label));
+
         /**
          *
          * внешний вид параметров:
@@ -49,7 +50,6 @@ class ProductsView extends View {
                         && !in_array($param_name, array('page', 'sort'))) {
                     $this->is_wrong_params = 1;
                     break;
-
                 }
                 switch($param_name) {
                     case 'brand': {
@@ -57,7 +57,7 @@ class ProductsView extends View {
                         foreach(explode('_',$param_values) as $bv) {
                             if(($brand = $this->brands->get_brand((string)$bv)) && !in_array($brand->id, $_GET['b'])) {
                                 $_GET['b'][] = $brand->id;
-                                $this->meta_array['brand'][] = $this->translations->products_brand.' '. $brand->name;
+                                $this->meta_array['brand'][] = $translations->products_brand.' '. $brand->name;
                             } else {
                                 $this->is_wrong_params = 1;
                             }
@@ -87,7 +87,7 @@ class ProductsView extends View {
                                 foreach ($this->features->get_options(array('feature_id' => $feature->id)) as $fo) {
                                     $option_translits[] = $fo->translit;
                                     if (in_array($fo->translit, $_GET[$feature->id])) {
-                                        $this->meta_array['options'][$feature->id][] = $feature->name . ' ' . $fo->value;
+                                        $this->meta_array['options'][$feature->id][] = $fo->value;
                                     }
                                 }
                                 foreach ($_GET[$feature->id] as $param_value) {
@@ -134,16 +134,16 @@ class ProductsView extends View {
         }
         
         if(!empty($this->meta['h1'])) {
-            $this->meta['h1']           = !empty($this->translations->ceo_filter_s_harakteristikami) ? ' ' : ''.$this->translations->ceo_filter_s_harakteristikami.' '.$this->meta['h1'];
+            $this->meta['h1']           = !empty($translations->ceo_filter_s_harakteristikami) ? ' ' : ''.$translations->ceo_filter_s_harakteristikami.' '.$this->meta['h1'];
         }
         if(!empty($this->meta['title'])) {
-            $this->meta['title']        = !empty($this->translations->ceo_filter_s_harakteristikami) ? ' ' : ''.$this->translations->ceo_filter_s_harakteristikami.' '.$this->meta['title'];
+            $this->meta['title']        = !empty($translations->ceo_filter_s_harakteristikami) ? ' ' : ''.$translations->ceo_filter_s_harakteristikami.' '.$this->meta['title'];
         }
         if(!empty($this->meta['keywords'])) {
-            $this->meta['keywords']     = !empty($this->translations->ceo_filter_s_harakteristikami) ? ' ' : ''.$this->translations->ceo_filter_s_harakteristikami.' '.$this->meta['keywords'];
+            $this->meta['keywords']     = !empty($translations->ceo_filter_s_harakteristikami) ? ' ' : ''.$translations->ceo_filter_s_harakteristikami.' '.$this->meta['keywords'];
         }
         if(!empty($this->meta['description'])) {
-            $this->meta['description']  = !empty($this->translations->ceo_filter_s_harakteristikami) ? ' ' : ''.$this->translations->ceo_filter_s_harakteristikami.' '.$this->meta['description'];
+            $this->meta['description']  = !empty($translations->ceo_filter_s_harakteristikami) ? ' ' : ''.$translations->ceo_filter_s_harakteristikami.' '.$this->meta['description'];
         }
         
         if($this->set_canonical) {
@@ -159,7 +159,7 @@ class ProductsView extends View {
         if(is_array(reset($params))) {
             $params = reset($params);
         }
-        
+
         $result_array = array('brand'=>array(),'features'=>array(),'sort'=>null,'page'=>null);
         //Определяем, что у нас уже есть в строке
         foreach($this->uri_array as $k=>$v) {
@@ -271,19 +271,18 @@ class ProductsView extends View {
         $result_string = '';
         foreach ($this->features_urls as $furl) {
             if (in_array($furl, array_keys($features))) {
-                $result_string .= '/' . $furl . '-' . implode('_', $features[$furl]);
+                $result_string .= '/'.$furl.'-'.implode('_', $features[$furl]);
             }
         }
         return $result_string;
     }
-
     private function filter_chpu_parse_url() {
         $uri = @parse_url($_SERVER["REQUEST_URI"]);
         preg_match("~$this->subdir(/?$this->lang_label)?/?(catalog|all-products|brands|discounted|bestsellers)/?~", $uri['path'], $this->catalog_type);
         $this->catalog_type = $this->catalog_type[2];
         //убираем модификатор каталога
-        $uri = preg_replace("~$this->subdir(/?$this->lang_label)?/?(catalog|all-products|brands|discounted|bestsellers)/?~", '', $uri['path']);
-        $this->uri_array = (empty($uri) ? array() : explode('/', $uri));
+        $uri = preg_replace("~$this->subdir(/?$this->lang_label)?/?(catalog|all-products|brands|discounted|bestsellers)/?~",'',$uri['path']);
+        $this->uri_array = (empty($uri) ? array() : explode('/',$uri));
         if ($this->catalog_type == 'catalog' || $this->catalog_type == 'brands') {
             array_shift($this->uri_array);
         }

@@ -1,5 +1,5 @@
 <?php
-    if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+    if(!empty($_SERVER['HTTP_USER_AGENT'])){
         session_name(md5($_SERVER['HTTP_USER_AGENT']));
     }
     session_start();
@@ -21,12 +21,12 @@
                 $rate = ($product->rating * $product->votes + $rating) / ($product->votes + 1);
                 $query = $okay->db->placehold("UPDATE __products SET rating = ?, votes = votes + 1 WHERE id = ?", $rate, $product_id);
                 $okay->db->query($query);
-                $_SESSION['rating_ids'][] = $product_id; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                $_SESSION['rating_ids'][] = $product_id; // вносим в список который уже проголосовали
                 echo $rate;
             }
-            else echo -1; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+            else echo -1; //товар не найден
         }
-        else echo 0; //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        else echo 0; //уже голосовали
     }
-    else echo -1; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    else echo -1; //неверные параметры
     

@@ -139,7 +139,7 @@ class Image extends Okay {
                 $new_name = $base.'_1.'.$ext;
             }
         }
-
+        
         // Перед долгим копированием займем это имя
         fclose(fopen($this->config->root_dir.$this->config->original_images_dir.$new_name, 'w'));
         if (copy($filename, $this->config->root_dir.$this->config->original_images_dir.$new_name)) {
@@ -389,8 +389,8 @@ class Image extends Okay {
         
         // Убираем комменты и т.п. из картинки
         $thumb->stripImage();
-        
-        //		$thumb->setImageCompressionQuality(100);
+        $thumb->setImageCompressionQuality($this->settings->image_quality ? $this->settings->image_quality : 80 );
+        $thumb->setImageCompression($this->settings->image_quality ? $this->settings->image_quality : 80);
         
         // Записываем картинку
         if(!$thumb->writeImages($dst_file, true)) {

@@ -9,7 +9,7 @@ class UserView extends View {
             header('Location: '.$this->config->root_url.'/'.$this->lang_link.'user/login');
             exit();
         }
-        
+
         if($this->request->method('post') && $this->request->post('user_save')) {
             $user = new stdClass();
             $user->name	    = $this->request->post('name');
@@ -55,6 +55,14 @@ class UserView extends View {
         }
         
         $orders = $this->orders->get_orders(array('user_id'=>$this->user->id));
+        $all_status = $this->orderstatus->get_status();
+        if($all_status) {
+            $orders_status = array();
+            foreach ($all_status as $status_item) {
+                $orders_status[$status_item->id] = $status_item;
+            }
+        }
+        $this->design->assign('orders_status', $orders_status);
         $this->design->assign('orders', $orders);
         
         $this->design->assign('meta_title', $this->user->name);
