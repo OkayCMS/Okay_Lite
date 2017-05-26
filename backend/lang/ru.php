@@ -774,3 +774,5 @@ $backend_translations->license_to = 'до';
 $backend_translations->license_on = 'для';
 $backend_translations->license_text = 'Лицензионное соглашение';
 $backend_translations->general_access = 'Доступно в OkayCMS Pro';
+$backend_translations->product_select_category = 'Укажите категорию';
+$backend_translations->feature_duplicate_url = 'Такой url уже используется';
