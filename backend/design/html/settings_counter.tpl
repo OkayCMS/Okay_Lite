@@ -1,5 +1,6 @@
 {$meta_title = $btr->settings_notify_counters scope=parent}
 
+{*Название страницы*}
 <div class="row">
     <div class="col-lg-7 col-md-7">
         <div class="heading_page">
@@ -12,6 +13,7 @@
     <div class="col-lg-5 col-md-5 float-xs-right"></div>
 </div>
 
+{*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -32,6 +34,7 @@
     </div>
 {/if}
 
+{*Главная форма страницы*}
 <form method="post" enctype="multipart/form-data" class="okay_disabled">
     <input type=hidden name="session_id" value="{$smarty.session.id}">
 
@@ -44,6 +47,7 @@
                         <a class="btn-minimize" href="javascript:;" ><i class="icon-arrow-down"></i></a>
                     </div>
                 </div>
+                {*Параметры элемента*}
                 <div class="toggle_body_wrap on fn_card">
                     <div class="boxed boxed_attention">
                         <div class="text_box mt-0">
@@ -70,6 +74,7 @@
             </div>
         </div>
     </div>
+    {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap">
@@ -98,6 +103,7 @@
             </div>
         </div>
     </div>
+    {*Параметры элемента*}
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap">

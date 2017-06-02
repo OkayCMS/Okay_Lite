@@ -1,5 +1,6 @@
 {$meta_title = $btr->seo_patterns_auto scope=parent}
 
+{*Название страницы*}
 <div class="row">
     <div class="col-lg-6 col-md-6">
         <div class="heading_page">
@@ -9,11 +10,10 @@
             </span>
         </div>
     </div>
-    <div class="col-lg-4 col-md-3 text-xs-right float-xs-right">
-
-    </div>
+    <div class="col-lg-4 col-md-3 text-xs-right float-xs-right"></div>
 </div>
 
+{*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -29,7 +29,7 @@
     </div>
 {/if}
 
-
+{*Главная форма страницы*}
 <form method="post" enctype="multipart/form-data" class="okay_disabled">
     <input type=hidden name="session_id" value="{$smarty.session.id}">
     <input type="hidden" name="lang_id" value="{$lang_id}" />
@@ -38,11 +38,12 @@
         <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap ">
                 <div class="row">
+                    {*Параметры элемента*}
                     <div class="col-lg-5 col-md-12">
                         <div class="heading_box">{$btr->seo_patterns_cat_name|escape}</div>
                         <div class="">
                             <div class="fn_preloader"></div>
-                            <div class="">
+                            <div>
                                 {if $categories}
                                     <div class="seo_cateogories_wrap scrollbar-inner">
                                         {function name=category_seo}
@@ -53,7 +54,6 @@
                                         {/function}
                                         {category_seo cats=$categories level=1}
                                     </div>
-
                                 {/if}
                             </div>
                         </div>

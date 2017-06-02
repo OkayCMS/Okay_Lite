@@ -1,6 +1,6 @@
 {$meta_title=$btr->stats_stats scope=parent}
 
-
+{*Название страницы*}
 <div class="row">
     <div class="col-lg-6 col-md-6">
         <div class="heading_page">
@@ -12,6 +12,7 @@
     </div>
 </div>
 
+{*Контент статистики*}
 <div class="row">
     <div class="col-lg-12 col-md-12">
         <div class="boxed fn_toggle_wrap okay_disabled">

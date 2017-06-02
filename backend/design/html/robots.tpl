@@ -1,5 +1,6 @@
 {$meta_title = $btr->robots_file scope=parent}
 
+{*Название страницы*}
 <div class="row">
     <div class="col-lg-7 col-md-7">
         <div class="heading_page">
@@ -12,6 +13,7 @@
     <div class="col-lg-5 col-md-5 float-xs-right"></div>
 </div>
 
+{*Вывод ошибок*}
 {if $message_error}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -26,6 +28,7 @@
     </div>
 {/if}
 
+{*Вывод успешных сообщений*}
 {if $message_success}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -55,6 +58,7 @@
         </div>
     </div>
 </div>
+{*Главная форма страницы*}
 <div class="row">
     <div class="col-lg-12 col-md-12">
         <div class="boxed fn_toggle_wrap min_height_230px okay_disabled">
@@ -71,7 +75,6 @@
                     </div>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
