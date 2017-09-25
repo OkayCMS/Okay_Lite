@@ -166,15 +166,10 @@
     {/if}
 </script>
 {literal}
-    <script src="design/js/jquery/datepicker/jquery.ui.datepicker-ru.js"></script>
     <script type="text/javascript">
         $(function() {
-            $('input[name="date_from"]').datepicker({
-                regional:'ru'
-            });
-            $('input[name="date_to"]').datepicker({
-                regional:'ru'
-            });
+            $('input[name="date_from"]').datepicker();
+            $('input[name="date_to"]').datepicker();
             $('button#fn_start').click(function() {
                 do_export();
             });

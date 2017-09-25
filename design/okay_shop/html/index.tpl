@@ -170,7 +170,7 @@
 </head>
 
 <body>
-<header>
+<header class="header">
     <nav class="top_nav">
         <div class="container">
             {* Main menu toggle button*}
@@ -347,7 +347,9 @@
         {/if}
     {/if}
     {if $module == "MainView"}
-        {$content}
+        <div class="fn_ajax_content">
+            {$content}
+        </div>
     {else}
         <div class="container">
             {include file='breadcrumb.tpl'}
@@ -361,7 +363,7 @@
 <div class="to_top"></div>
 
 {* Footer *}
-<footer>
+<footer class="footer">
     <div class="footer_top">
         <div class="container">
             <span class="payments_text tablet-hidden" data-language="index_payments">{$lang->index_payments}</span>

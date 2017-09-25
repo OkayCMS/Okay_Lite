@@ -208,8 +208,6 @@
                 contentType: "application/json",
                 success: function(json) {
                     $.each(json.data, function (index,value){
-					console.log(value);
-
 						var metrika = {
 							'date2': value.dimensions[0]['name'],
 							'visits2': value.metrics[0],
@@ -220,7 +218,6 @@
 						};
 
                         counter.push(metrika);
-                        console.log(metrika);
                     });
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
