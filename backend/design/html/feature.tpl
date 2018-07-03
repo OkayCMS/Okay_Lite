@@ -90,7 +90,7 @@
                             <input name="id" type="hidden" value="{$feature->id|escape}"/>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12 col-lg-6 col-md-10">
+                            <div class="col-xs-12 col-lg-6 col-md-6">
                                 <div class="">
                                     <div class="input-group">
                                         <span class="input-group-addon">URL</span>
@@ -106,6 +106,18 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-lg-6 col-md-6 mt-q">
+                                <div class="heading_label boxes_inline">{$btr->feature_url_in_product|escape}</div>
+                                <div class="boxes_inline">
+                                    <div class="okay_switch clearfix">
+                                        <label class="switch switch-default">
+                                            <input class="switch-input" name="url_in_product" value='1' type="checkbox" id="visible_checkbox" {if $feature->url_in_product}checked=""{/if}/>
+                                            <span class="switch-label"></span>
+                                            <span class="switch-handle"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                             </div>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
@@ -185,14 +197,53 @@
     </div>
 
     <div class="row">
-       <div class="col-lg-12 col-md-12 ">
+        {*Блок алиасов свойств*}
+        <div class="col-lg-12 col-md-12 ">
+            <div class="boxed fn_toggle_wrap min_height_210px">
+                <div class="heading_box">
+                    {$btr->feature_feature_aliases|escape}
+                    <span class="hint-right-middle-t-info-s-med-mobile hint-anim" data-hint="{$btr->general_access|escape}">
+                        <img src="design/images/exclamation.png">
+                    </span>
+                    <div class="toggle_arrow_wrap fn_toggle_card text-primary">
+                        <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
+                    </div>
+                </div>
+                <div class="toggle_body_wrap on fn_card fn_sort_list okay_disabled">
+                    <div class="boxed boxed_warning">
+                        <div class="">
+                            {$btr->feature_delete_alias_notice|escape}
+                        </div>
+                    </div>
+                    <div class="okay_list ok_related_list">
+                        <div class="okay_list_head">
+                            <div class="okay_list_heading okay_list_drag"></div>
+                            <div class="okay_list_heading feature_alias_name">{$btr->feature_feature_alias_name}</div>
+                            <div class="okay_list_heading feature_alias_variable">{$btr->feature_feature_alias_variable}</div>
+                            <div class="okay_list_heading feature_alias_value">{$btr->feature_feature_alias_value}</div>
+                            <div class="okay_list_heading okay_list_close"></div>
+                        </div>
+                    </div>
+                    <div class="box_btn_heading mt-1">
+                        <button type="button" class="btn btn_small btn-info fn_add_feature_alias">
+                            {include file='svg_icon.tpl' svgId='plus'}
+                            <span>{$btr->feature_add_feature_alias|escape}</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 mb-2">
             <button type="submit" class="btn btn_small btn_blue float-md-right">
                 {include file='svg_icon.tpl' svgId='checked'}
                 <span>{$btr->general_apply|escape}</span>
             </button>
         </div>
     </div>
-
 </form>
 
 {* On document load *}

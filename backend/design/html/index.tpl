@@ -311,7 +311,7 @@
         }
 
         if($('form.fn_fast_button').size()>0){
-            $('input,textarea,select, .dropdown-toggle').bind('keyup change dragover click',function(){
+            $('input,textarea,select, .dropdown-toggle, .fn_sort_item, .fn_category_item').bind('keyup change dragover click',function(){
                $('.fn_fast_save').show();
             });
             $('.fn_fast_save').on('click', function () {
@@ -609,7 +609,12 @@
             $('input[name="meta_keywords"]').change(function() { meta_keywords_touched = true; });
             $('textarea[name="meta_description"]').change(function() { meta_description_touched = true; });
 
+            $('#fn_meta_title_counter').text( '('+$('input[name="meta_title"]').val().length+')' );
+            $('#fn_meta_description_counter').text( '('+$('textarea[name="meta_description"]').val().length+')' );
+
             $('input[name="name"]').keyup(function() { set_meta(); });
+            $('input[name="meta_title"]').keyup(function() { $('#fn_meta_title_counter').text( '('+$('input[name="meta_title"]').val().length+')' ); });
+            $('textarea[name="meta_description"]').keyup(function() { $('#fn_meta_description_counter').text( '('+$('textarea[name="meta_description"]').val().length+')' ); });
 
             if($(".fn_meta_brand").size()>0) {
                 $("select[name=brand_id]").on("change",function () {
@@ -638,6 +643,7 @@
 
         function generate_meta_title() {
             name = $('input[name="name"]').val();
+            $('#fn_meta_title_counter').text( '('+name.length+')' );
             return name;
         }
 
@@ -669,6 +675,7 @@
         function generate_meta_description() {
             if(typeof(tinyMCE.get("fn_editor")) =='object') {
                 description = tinyMCE.get("fn_editor").getContent().replace(/(<([^>]+)>)/ig," ").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);
+                $('#fn_meta_description_counter').text( '('+description.length+')');
                 return description;
             } else {
                 return $('.fn_editor_class').val().replace(/(<([^>]+)>)/ig," ").replace(/(\&nbsp;)/ig," ").replace(/^\s+|\s+$/g, '').substr(0, 512);

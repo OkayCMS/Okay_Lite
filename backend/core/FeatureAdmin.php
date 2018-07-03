@@ -16,7 +16,8 @@ class FeatureAdmin extends Okay {
             $feature->auto_name_id = $this->request->post('auto_name_id');
             $feature->auto_value_id = $this->request->post('auto_value_id');
             $feature->url = $this->request->post('url', 'string');
-            
+            $feature->url_in_product = $this->request->post('url_in_product');
+
             $feature->url = preg_replace("/[\s]+/ui", '', $feature->url);
             $feature->url = strtolower(preg_replace("/[^0-9a-z]+/ui", '', $feature->url));
             if(empty($feature->url)) {
@@ -49,11 +50,12 @@ class FeatureAdmin extends Okay {
                 }
                 $this->features->update_feature_categories($feature->id, $feature_categories);
             }
+
         } else {
             $feature->id = $this->request->get('id', 'integer');
             $feature = $this->features->get_feature($feature->id);
         }
-        
+
         $feature_categories = array();
         if($feature) {
             $feature_categories = $this->features->get_feature_categories($feature->id);
