@@ -94,7 +94,7 @@
                         </div>
                         <div class="form-group">
                             <input class="form-control" name="name" type="text" value="{$product->name|escape}"/>
-                            <input name="id" type="hidden" value="{$product->id|escape}"/>
+                            <input id="product_id" name="id" type="hidden" value="{$product->id|escape}"/>
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 col-md-10">
@@ -505,14 +505,39 @@
             <div class="toggle_body_wrap on fn_card">
                 <div class="features_wrap fn_features_wrap">
                     {foreach $features as $feature}
-                        {assign var="feature_id" value=$feature->id}
-                        <div class="feature_row clearfix">
-                            <div class="feature_name">
-                                <span title="{$feature->name|escape}">{$feature->name|escape}</span>
-                            </div>
-                            <div class="feature_value">
-                                <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="options[{$feature_id}][value]" value="{$options.$feature_id->value|escape}"/>
-                            </div>
+                        <div class="fn_feature_block_{$feature->id}">
+                            {assign var="feature_id" value=$feature->id}
+                            {foreach $features_values.$feature_id as $feature_value}
+                                <div class="feature_row clearfix">
+                                    <div class="feature_name{if !$feature_value@first} additional_values{/if}">
+                                        {if $feature_value@first}
+                                            <span title="{$feature->name|escape}">
+                                                <a href="index.php?module=FeatureAdmin&id={$feature->id}" target="_blank">
+                                                    {$feature->name|escape}
+                                                </a>
+                                            </span>
+                                        {/if}
+                                    </div>
+                                    <div class="feature_value">
+                                        <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value="{$feature_value->value|escape}"/>
+                                        <input class="fn_value_id_input" type="hidden" name="features_values[{$feature_id}][]" value="{$feature_value->id}"/>
+                                    </div>
+                                </div>
+                            {foreachelse}
+                                <div class="feature_row clearfix">
+                                    <div class="feature_name">
+                                        <span title="{$feature->name|escape}">
+                                            <a href="index.php?module=FeatureAdmin&id={$feature->id}" target="_blank">
+                                                {$feature->name|escape}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="feature_value">
+                                        <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value=""/>
+                                        <input class="fn_value_id_input" type="hidden" name="features_values[{$feature_id}][]" value=""/>
+                                    </div>
+                                </div>
+                            {/foreach}
                         </div>
                     {/foreach}
                     <div class="fn_new_feature">
@@ -526,12 +551,17 @@
                             </span>
                         </div>
                     </div>
-                    <div class="fn_new_feature_category feature_row clearfix">
-                        <div class="feature_name">
-                            <span title="" class="fn_feature_name"></span>
-                        </div>
-                        <div class="feature_value">
-                            <input class="feature_input fn_auto_option" data-id="" type="text" name="" value=""/>
+                    <div class="fn_new_feature_category">
+                        <div class="feature_row clearfix">
+                            <div class="feature_name">
+                                <span title="" class="fn_feature_name">
+                                    <a href="" target="_blank"></a>
+                                </span>
+                            </div>
+                            <div class="feature_value">
+                                <input class="feature_input fn_auto_option" data-id="" type="text" name="" value=""/>
+                                <input class="fn_value_id_input" type="hidden" name="" value=""/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -775,7 +805,6 @@
             $(this).closest(".variants_list_item ").fadeOut(200);
             $(this).closest(".variants_list_item ").remove();
         });
-        // Удаление варианта
 
         // Удалить файл к варианту
         $(document).on("click", ".fn_remove_attach", function () {
@@ -857,29 +886,41 @@
             $("div.fn_features_wrap").empty();
             $.ajax({
                 url: "ajax/get_features.php",
-                data: {category_id: category_id, product_id: $("input[name=id]").val()},
+                data: {category_id: category_id, product_id: $("#product_id").val()},
                 dataType: 'json',
                 success: function(data){
                     for(i=0; i<data.length; i++)
                     {
                         feature = data[i];
-                        var new_line = new_feature_category.clone(true);
-                        new_line.find(".fn_feature_name").text(feature.name).attr('title', feature.name);
-                        var value = new_line.find(".fn_auto_option");
-                        value.data('id', feature.id);
-                        value.attr('name', "options["+feature.id+"][value]");
-                        value.val(feature.value);
-                        value.devbridgeAutocomplete({
-                            serviceUrl:'ajax/options_autocomplete.php',
-                            minChars:0,
-                            orientation:'auto',
-                            params: {feature_id:feature.id},
-                            noCache: false,
-                            onSelect:function(suggestion){
-                                $(this).trigger('change');
-                            }
-                        });
-                        new_line.appendTo("div.fn_features_wrap");
+                        for (var iv=0; iv<feature.values.length; iv++) {
+                            var new_line = new_feature_category.clone(true);
+                            new_line.addClass('fn_feature_block_'+feature.id);
+                            new_line.find(".fn_feature_name").attr('title', feature.name);
+                            new_line.find(".fn_feature_name a").text(feature.name).attr('href', "index.php?module=FeatureAdmin&id="+feature.id);
+                            var value = new_line.find(".fn_auto_option"),
+                                id_input = new_line.find(".fn_value_id_input");
+                            value.data('id', feature.id);
+                            value.val(feature.values[iv].value);
+                            value.attr('name', "features_values_text["+feature.id+"][]");
+                            id_input.attr('name', "features_values["+feature.id+"][]");
+                            id_input.val(feature.values[iv].id)
+                            value.devbridgeAutocomplete({
+                                serviceUrl:'ajax/options_autocomplete.php',
+                                minChars:0,
+                                orientation:'auto',
+                                params: {feature_id:feature.id},
+                                noCache: false,
+                                onSelect:function(suggestion){
+                                    id_input.val(suggestion.data.id);
+                                    $(this).trigger('change');
+                                },
+                                onSearchStart:function(params){
+                                    id_input.val("");
+                                }
+                            });
+
+                            new_line.appendTo("div.fn_features_wrap");
+                        }
                     }
                 }
             });
@@ -888,14 +929,19 @@
 
         // Автодополнение свойств
         $(".fn_auto_option").each(function() {
-            feature_id = $(this).data("id");
+            var feature_id = $(this).data("id"),
+                id_input = $(this).closest(".feature_value").find(".fn_value_id_input");
             $(this).devbridgeAutocomplete({
                 serviceUrl:'ajax/options_autocomplete.php',
                 minChars:0,
                 params: {feature_id:feature_id},
                 noCache: false,
-                onSelect:function(sugestion){
+                onSelect:function(suggestion){
+                    id_input.val(suggestion.data.id);
                     $(this).trigger('change');
+                },
+                onSearchStart:function(params){
+                    id_input.val("");
                 }
             });
         });
@@ -911,7 +957,6 @@
         $(document).on("click",".fn_delete_feature",function () {
            $(this).parent().remove();
         });
-
 
         // Добавление связанного товара
         var new_related_product = $('#new_related_product').clone(true);

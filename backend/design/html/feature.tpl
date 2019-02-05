@@ -111,13 +111,13 @@
                                 <div class="boxes_inline">
                                     <div class="okay_switch clearfix">
                                         <label class="switch switch-default">
-                                            <input class="switch-input" name="url_in_product" value='1' type="checkbox" id="visible_checkbox" {if $feature->url_in_product}checked=""{/if}/>
+                                            <input class="switch-input" name="url_in_product" value='1' type="checkbox" {if $feature->url_in_product}checked=""{/if}/>
                                             <span class="switch-label"></span>
                                             <span class="switch-handle"></span>
                                         </label>
                                     </div>
                                 </div>
-                             </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-12">
@@ -197,40 +197,148 @@
     </div>
 
     <div class="row">
-        {*Блок алиасов свойств*}
-        <div class="col-lg-12 col-md-12 ">
+        {*Значения свойства*}
+        <div class="col-lg-12 col-md-12">
             <div class="boxed fn_toggle_wrap min_height_210px">
                 <div class="heading_box">
-                    {$btr->feature_feature_aliases|escape}
-                    <span class="hint-right-middle-t-info-s-med-mobile hint-anim" data-hint="{$btr->general_access|escape}">
-                        <img src="design/images/exclamation.png">
-                    </span>
+                    {$btr->feature_feature_values|escape} ({$feature_values_count})
                     <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                         <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                     </div>
                 </div>
-                <div class="toggle_body_wrap on fn_card fn_sort_list okay_disabled">
-                    <div class="boxed boxed_warning">
-                        <div class="">
-                            {$btr->feature_delete_alias_notice|escape}
+                <div class="toggle_body_wrap on fn_card fn_sort_list">
+
+                    <div class="row mb-1">
+                        <div class="col-lg-8 col-md-7 col-sm 12">
+                            <button type="button" class="btn btn_small btn-info fn_add_value float-lg-left mr-1">
+                                {include file='svg_icon.tpl' svgId='plus'}
+                                <span>{$btr->feature_add_value|escape}</span>
+                            </button>
+                            <div class="float-lg-left mt-q feature_to_index_new_value">
+                                <div class="heading_label boxes_inline">{$btr->feature_to_index_new_value|escape}</div>
+                                <div class="boxes_inline">
+                                    <div class="okay_switch clearfix">
+                                        <label class="switch switch-default">
+                                            <input class="switch-input" name="to_index_new_value" value="1" type="checkbox" {if $feature->to_index_new_value}checked=""{/if}/>
+                                            <span class="switch-label"></span>
+                                            <span class="switch-handle"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="okay_list ok_related_list">
-                        <div class="okay_list_head">
-                            <div class="okay_list_heading okay_list_drag"></div>
-                            <div class="okay_list_heading feature_alias_name">{$btr->feature_feature_alias_name}</div>
-                            <div class="okay_list_heading feature_alias_variable">{$btr->feature_feature_alias_variable}</div>
-                            <div class="okay_list_heading feature_alias_value">{$btr->feature_feature_alias_value}</div>
-                            <div class="okay_list_heading okay_list_close"></div>
+                        <div class="col-lg-4 col-md-5 col-sm 12">
+                            <div class="float-xs-none float-md-right">
+                                <select onchange="location = this.value;" class="selectpicker">
+                                    <option value="{url limit=5}" {if $current_limit == 5}selected{/if}>{$btr->general_show_by|escape} 5</option>
+                                    <option value="{url limit=10}" {if $current_limit == 10}selected{/if}>{$btr->general_show_by|escape} 10</option>
+                                    <option value="{url limit=25}" {if $current_limit == 25}selected{/if}>{$btr->general_show_by|escape} 25</option>
+                                    <option value="{url limit=50}" {if $current_limit == 50}selected{/if}>{$btr->general_show_by|escape} 50</option>
+                                    <option value="{url limit=100}" {if $current_limit == 100}selected=""{/if}>{$btr->general_show_by|escape} 100</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="box_btn_heading mt-1">
-                        <button type="button" class="btn btn_small btn-info fn_add_feature_alias">
-                            {include file='svg_icon.tpl' svgId='plus'}
-                            <span>{$btr->feature_add_feature_alias|escape}</span>
-                        </button>
                     </div>
 
+
+                    <div class="okay_list ok_related_list">
+                        <div class="okay_list_head">
+                            <div class="okay_list_heading feature_value_name">{$btr->feature_value_name}</div>
+                            <div class="okay_list_heading feature_value_translit">{$btr->feature_value_translit}</div>
+                            <div class="okay_list_heading feature_value_products_num">{$btr->feature_value_products_num}</div>
+                            <div class="okay_list_heading feature_value_index">
+                                {$btr->feature_value_index}
+                                <div class="okay_switch clearfix">
+                                    <label class="switch switch-default">
+                                        <input class="switch-input fn_to_index_all_values" value="" type="checkbox" {if $feature->to_index_new_value}checked=""{/if}/>
+                                        <input type="hidden" name="to_index_all_values" value="" disabled=""/>
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="okay_list_heading okay_list_close"></div>
+                        </div>
+                        <div class="okay_list_body fn_feature_values_list sortable fn_values_list">
+                            {foreach $features_values as $fv}
+                                <div class="fn_row okay okay_list_body_item fn_sort_item">
+                                    <div class="okay_list_row">
+                                        <input type="hidden" name="feature_values[id][]" value="{$fv->id|escape}">
+                                        <input type="hidden" class="fn_value_to_delete" name="values_to_delete[]" disabled="" value="{$fv->id|escape}">
+                                        <div class="okay_list_boding feature_value_name">
+                                            <div class="heading_label visible_md">{$btr->feature_value_name}</div>
+                                            <input type="text" class="form-control fn_feature_alias_name" name="feature_values[value][]" value="{$fv->value|escape}">
+                                        </div>
+                                        <div class="okay_list_boding feature_value_translit">
+                                            <div class="heading_label visible_md">{$btr->feature_value_translit}</div>
+                                            <input type="text" class="form-control fn_feature_alias_name" name="feature_values[translit][]" value="{$fv->translit|escape}">
+                                        </div>
+                                        <div class="okay_list_boding feature_value_products_num">
+                                            <div class="heading_label visible_md">{$btr->feature_value_products_num}</div>
+                                            <a href="index.php?module=ProductsAdmin&features[{$feature->id}]={$fv->translit|escape}" class="form-control" target="_blank">{$fv->count|escape}</a>
+                                        </div>
+                                        <div class="okay_list_boding feature_value_index">
+                                            <div class="heading_label visible_md">{$btr->feature_value_index}</div>
+                                            <div class="okay_switch clearfix">
+                                                <label class="switch switch-default">
+                                                    <input class="switch-input fn_index" name="" value="" disabled type="checkbox" {if $fv->to_index}checked=""{/if}/>
+                                                    <span class="switch-label"></span>
+                                                    <span class="switch-handle"></span>
+                                                </label>
+                                            </div>
+                                            <input type="hidden" class="form-control" name="feature_values[to_index][]" value="{$fv->to_index|escape}">
+                                        </div>
+                                        <div class="okay_list_boding okay_list_close">
+                                            <button data-hint="{$btr->feature_delete_value|escape}" type="button" class="btn_close fn_remove_value hint-bottom-right-t-info-s-small-mobile hint-anim">
+                                                {include file='svg_icon.tpl' svgId='delete'}
+                                                <span class="visible_md">{$btr->feature_delete_value|escape}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/foreach}
+
+                            <div class="fn_row okay okay_list_body_item fn_sort_item fn_new_value" style="display: none;">
+                                <div class="okay_list_row">
+                                    <input type="hidden" class="fn_feature_alias_id" name="feature_values[id][]" value="">
+                                    <div class="okay_list_boding feature_value_name">
+                                        <div class="heading_label visible_md">{$btr->feature_value_name}</div>
+                                        <input type="text" class="form-control fn_feature_alias_name" name="feature_values[value][]" value="">
+                                    </div>
+                                    <div class="okay_list_boding feature_value_translit">
+                                        <div class="heading_label visible_md">{$btr->feature_value_translit}</div>
+                                        <input type="text" class="form-control fn_feature_alias_name" name="feature_values[translit][]" value="">
+                                    </div>
+                                    <div class="okay_list_boding feature_value_products_num">
+                                        <div class="heading_label visible_md">{$btr->feature_value_products_num}</div>
+                                        <input type="text" class="form-control" name="" value="0" readonly="">
+                                    </div>
+                                    <div class="okay_list_boding feature_value_index">
+                                        <div class="heading_label visible_md">{$btr->feature_value_index}</div>
+                                        <div class="okay_switch clearfix">
+                                            <label class="switch switch-default">
+                                                <input class="switch-input fn_index" name="" value="" type="checkbox" disabled checked=""/>
+                                                <span class="switch-label"></span>
+                                                <span class="switch-handle"></span>
+                                            </label>
+                                        </div>
+                                        <input type="hidden" class="form-control" name="feature_values[to_index][]" value="1">
+                                    </div>
+                                    <div class="okay_list_boding okay_list_close">
+                                        <button data-hint="{$btr->feature_delete_alias|escape}" type="button" class="btn_close fn_remove_item hint-bottom-right-t-info-s-small-mobile  hint-anim">
+                                            {include file='svg_icon.tpl' svgId='delete'}
+                                            <span class="visible_md">{$btr->feature_delete_alias|escape}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm 12 txt_center">
+                            {include file='pagination.tpl'}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -247,8 +355,62 @@
 </form>
 
 {* On document load *}
+{if $feature->id}
+{literal}
+    <script src="design/js/autocomplete/jquery.autocomplete-min.js"></script>
+    <script>
+        var union_main_value_id = $('input[name="union_main_value_id"]'),
+            union_second_value_id = $('input[name="union_second_value_id"]');
+
+        $(".fn_union_main_value").devbridgeAutocomplete({
+            serviceUrl:'ajax/options_autocomplete.php',
+            minChars:0,
+            params: {feature_id:{/literal}{$feature->id}{literal}},
+            noCache: false,
+            orientation:'auto',
+            onSelect:function(suggestion){
+                union_main_value_id.val(suggestion.data.id);
+            },
+            onSearchStart:function(params){
+                union_main_value_id.val("");
+            }
+        });
+
+        $(".fn_union_second_value").devbridgeAutocomplete({
+            serviceUrl:'ajax/options_autocomplete.php',
+            minChars:0,
+            params: {feature_id:{/literal}{$feature->id}{literal}},
+            noCache: false,
+            orientation:'auto',
+            onSelect:function(suggestion){
+                union_second_value_id.val(suggestion.data.id);
+                $(this).trigger('change');
+            },
+            onSearchStart:function(params){
+                union_second_value_id.val("");
+            }
+        });
+    </script>
+{/literal}
+{/if}
+
 {literal}
     <script>
+        var new_value = $(".fn_new_value").clone(false);
+        $(".fn_new_value").remove();
+        $(document).on("click", ".fn_add_value", function () {
+            var value = new_value.clone(true);
+            value.show();
+            $(".fn_values_list").prepend(value);
+            return false;
+        });
+
+        $(document).on('click', '.fn_remove_value', function(){
+            $(this).closest('.fn_row').fadeOut(200, function() {
+                $(this).closest(".fn_row").find(".fn_value_to_delete").attr("disabled", false);
+            });
+        });
+
         $(function() {
             $('input[name="name"]').keyup(function() {
                 if(!$('#block_translit').is(':checked')) {
