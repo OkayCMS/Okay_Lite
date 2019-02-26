@@ -173,6 +173,17 @@ class IndexAdmin extends Okay {
             exit();
         }
 
+        // Перевод админки
+        $backend_translations = $this->backend_translations;
+        $file = "backend/lang/".$this->manager->lang.".php";
+        if (!file_exists($file)) {
+            foreach (glob("backend/lang/??.php") as $f) {
+                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
+                break;
+            }
+        }
+        require_once($file);
+        
         $this->design->set_templates_dir('backend/design/html');
         $this->design->set_compiled_dir('backend/design/compiled');
 
@@ -269,17 +280,7 @@ class IndexAdmin extends Okay {
         
         // Подключаем файл с необходимым модулем
         require_once('backend/core/'.$module.'.php');
-
-        // Перевод админки
-        $backend_translations = $this->backend_translations;
-        $file = "backend/lang/".$this->manager->lang.".php";
-        if (!file_exists($file)) {
-            foreach (glob("backend/lang/??.php") as $f) {
-                $file = "backend/lang/".pathinfo($f, PATHINFO_FILENAME).".php";
-                break;
-            }
-        }
-        require_once($file);
+        
         $this->design->assign('btr', $backend_translations);
         
         // Создаем соответствующий модуль

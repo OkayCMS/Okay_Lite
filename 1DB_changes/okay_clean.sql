@@ -5712,12 +5712,12 @@ CREATE TABLE `ok_seo_filter_patterns` (
 DROP TABLE IF EXISTS `ok_settings`;
 CREATE TABLE `ok_settings` (
   `setting_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `param` varchar(255) NOT NULL DEFAULT '',
   `value` text NOT NULL,
   PRIMARY KEY (`setting_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `ok_settings` (`setting_id`, `name`, `value`) VALUES
+INSERT INTO `ok_settings` (`setting_id`, `param`, `value`) VALUES
 (30,	'theme',	'okay_shop'),
 (33,	'products_num',	'24'),
 (53,	'date_format',	'd.m.Y'),
@@ -5742,41 +5742,42 @@ INSERT INTO `ok_settings` (`setting_id`, `name`, `value`) VALUES
 (131,	'yandex_sales_notes',	''),
 (132,	'posts_num',	'10'),
 (133,	'image_sizes',	'200x200|60x60|50x50|219x172|162x77|183x183|35x35|400x300|100x100|1000x1000|800x600|300x300|87x72|330x300|77x77|165x90|150x150|300x120|55x55|250x250|75x75|70x70|360x360|1170x390|465x265|250x100'),
-(134,	'captcha_product',	'1'),
-(135,	'captcha_post',	'1'),
-(136,	'captcha_cart',	'1'),
-(137,	'captcha_register',	'1'),
-(138,	'captcha_feedback',	'1'),
-(139,	'site_work',	'on'),
-(142,	'topvisor_key',	'bded4fc3f61f7801cefe'),
-(145,	'y_metric',	''),
-(148,	'yandex_metrika_app_id',	''),
-(149,	'yandex_metrika_token',	''),
-(151,	'lastModifyPosts',	'2018-06-26 20:31:31'),
-(152,	'image_quality',	'75'),
-(153,	'email_lang',	'ru'),
-(154,	'site_logo',	'logo.png'),
-(155,	'gather_enabled',	'1'),
-(156,	'captcha_callback',	'1'),
-(157,	'iframe_map_code',	'<iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2241.7081645541616!2d37.5206056!3d55.8156667!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x944fd88cf96de197!2sOkayCMS!5e0!3m2!1sru!2sua!4v1495180474127\" width=\"100%\" height=\"450\" frameborder=\"0\" style=\"border:0;\" allowfullscreen></iframe><br>'),
-(158,	'captcha_type',	'default'),
-(159,	'max_filter_brands',	'1'),
-(160,	'max_filter_filter',	'1'),
-(161,	'max_filter_features_values',	'1'),
-(162,	'max_filter_features',	'1'),
-(163,	'max_filter_depth',	'1');
+(134,	'products_image_sizes',	'200x200|50x50|1800x1200w|600x340|75x75|330x300|800x600|55x55|300x120|35x35'),
+(135,	'captcha_product',	'1'),
+(136,	'captcha_post',	'1'),
+(137,	'captcha_cart',	'1'),
+(138,	'captcha_register',	'1'),
+(139,	'captcha_feedback',	'1'),
+(140,	'site_work',	'on'),
+(141,	'yandex_metrika_token',	''),
+(145,	'topvisor_key',	'bded4fc3f61f7801cefe'),
+(148,	'y_metric',	''),
+(149,	'yandex_metrika_app_id',	''),
+(150,	'max_filter_brands',	'1'),
+(152,	'lastModifyPosts',	'2018-06-26 20:31:31'),
+(153,	'image_quality',	'75'),
+(154,	'email_lang',	'ru'),
+(155,	'site_logo',	'logo.png'),
+(156,	'gather_enabled',	'1'),
+(157,	'captcha_callback',	'1'),
+(158,	'iframe_map_code',	'<iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2241.7081645541616!2d37.5206056!3d55.8156667!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x944fd88cf96de197!2sOkayCMS!5e0!3m2!1sru!2sua!4v1495180474127\" width=\"100%\" height=\"450\" frameborder=\"0\" style=\"border:0;\" allowfullscreen></iframe><br>'),
+(159,	'captcha_type',	'default'),
+(161,	'max_filter_filter',	'1'),
+(162,	'max_filter_features_values',	'1'),
+(163,	'max_filter_features',	'1'),
+(164,	'max_filter_depth',	'1');
 
 DROP TABLE IF EXISTS `ok_settings_lang`;
 CREATE TABLE `ok_settings_lang` (
-  `name` varchar(128) NOT NULL,
+  `param` varchar(128) NOT NULL,
   `lang_id` int(11) NOT NULL DEFAULT '0',
   `value` text NOT NULL,
-  PRIMARY KEY (`lang_id`,`name`),
-  KEY `name` (`name`),
+  PRIMARY KEY (`lang_id`,`param`),
+  KEY `name` (`param`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `ok_settings_lang` (`name`, `lang_id`, `value`) VALUES
+INSERT INTO `ok_settings_lang` (`param`, `lang_id`, `value`) VALUES
 ('notify_from_name',	1,	'Администратор'),
 ('site_annotation',	1,	'Техническое сообщение на случай отключения сайта'),
 ('site_name',	1,	'Интернет-магазин на OkayCMS'),
@@ -5827,11 +5828,12 @@ CREATE TABLE `ok_support_info` (
   `public_key` varchar(2048) DEFAULT NULL,
   `okay_public_key` varchar(2048) DEFAULT NULL,
   `is_auto` tinyint(1) NOT NULL DEFAULT '1',
+  `accesses` VARCHAR(2048) NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `ok_support_info` (`id`, `temp_key`, `temp_time`, `new_messages`, `balance`, `private_key`, `public_key`, `okay_public_key`, `is_auto`) VALUES
-(1,	NULL,	NULL,	0,	0,	NULL,	NULL,	NULL,	1);
+INSERT INTO `ok_support_info` (`id`, `temp_key`, `temp_time`, `new_messages`, `balance`, `private_key`, `public_key`, `okay_public_key`, `is_auto`, `accesses`) VALUES
+(1,	NULL,	NULL,	0,	0,	NULL,	NULL,	NULL,	1,	'');
 
 DROP TABLE IF EXISTS `ok_users`;
 CREATE TABLE `ok_users` (

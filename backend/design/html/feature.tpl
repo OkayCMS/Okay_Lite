@@ -259,11 +259,12 @@
                             </div>
                             <div class="okay_list_heading okay_list_close"></div>
                         </div>
-                        <div class="okay_list_body fn_feature_values_list sortable fn_values_list">
+                        <div class="okay_list_body fn_feature_values_list sort_extended fn_values_list">
                             {foreach $features_values as $fv}
                                 <div class="fn_row okay okay_list_body_item fn_sort_item">
                                     <div class="okay_list_row">
                                         <input type="hidden" name="feature_values[id][]" value="{$fv->id|escape}">
+                                        <input class="hidden_check" type="checkbox" name="check[]" value="{$fv->id}" />
                                         <input type="hidden" class="fn_value_to_delete" name="values_to_delete[]" disabled="" value="{$fv->id|escape}">
                                         <div class="okay_list_boding feature_value_name">
                                             <div class="heading_label visible_md">{$btr->feature_value_name}</div>
@@ -334,6 +335,22 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="hidden">
+                        {*Здесь сделано на селектах, для общей савместимости скрипта Drag-and-drop*}
+                        <select name="action" class="selectpicker values_action">
+                            <option value="" selected></option>
+                            {if $pages_count>1}
+                                <option value="move_to_page"></option>
+                            {/if}
+                        </select>
+                        <select name="target_page" class="selectpicker">
+                            {section target_page $pages_count}
+                                <option value="{$smarty.section.target_page.index+1}">{$smarty.section.target_page.index+1}</option>
+                            {/section}
+                        </select>
+                    </div>
+                    
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm 12 txt_center">
                             {include file='pagination.tpl'}
@@ -353,46 +370,6 @@
         </div>
     </div>
 </form>
-
-{* On document load *}
-{if $feature->id}
-{literal}
-    <script src="design/js/autocomplete/jquery.autocomplete-min.js"></script>
-    <script>
-        var union_main_value_id = $('input[name="union_main_value_id"]'),
-            union_second_value_id = $('input[name="union_second_value_id"]');
-
-        $(".fn_union_main_value").devbridgeAutocomplete({
-            serviceUrl:'ajax/options_autocomplete.php',
-            minChars:0,
-            params: {feature_id:{/literal}{$feature->id}{literal}},
-            noCache: false,
-            orientation:'auto',
-            onSelect:function(suggestion){
-                union_main_value_id.val(suggestion.data.id);
-            },
-            onSearchStart:function(params){
-                union_main_value_id.val("");
-            }
-        });
-
-        $(".fn_union_second_value").devbridgeAutocomplete({
-            serviceUrl:'ajax/options_autocomplete.php',
-            minChars:0,
-            params: {feature_id:{/literal}{$feature->id}{literal}},
-            noCache: false,
-            orientation:'auto',
-            onSelect:function(suggestion){
-                union_second_value_id.val(suggestion.data.id);
-                $(this).trigger('change');
-            },
-            onSearchStart:function(params){
-                union_second_value_id.val("");
-            }
-        });
-    </script>
-{/literal}
-{/if}
 
 {literal}
     <script>
