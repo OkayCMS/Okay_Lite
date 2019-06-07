@@ -111,8 +111,9 @@ class Validate extends Okay {
                     return false;
                 }
                 return true;
-            } elseif ($this->settings->captcha_type == 'v2' || $this->settings->captcha_type == 'invisible'){
-                return $this->recaptcha();
+            } elseif ($this->settings->captcha_type == 'v2' 
+                || $this->settings->captcha_type == 'invisible'){
+                return $this->recaptcha->check();
             }
         }
         return true;

@@ -4383,7 +4383,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .feature_input {
     display: block;
-    width: 100%;
+    width: calc(100% - 35px);
     padding: 5px 10px;
     font-size: 14px;
     color: #607d8b;

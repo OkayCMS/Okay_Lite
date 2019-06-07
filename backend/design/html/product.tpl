@@ -521,6 +521,11 @@
                                     <div class="feature_value">
                                         <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value="{$feature_value->value|escape}"/>
                                         <input class="fn_value_id_input" type="hidden" name="features_values[{$feature_id}][]" value="{$feature_value->id}"/>
+                                        <button type="button" class="btn btn_mini btn-info feature_multi_values" disabled title="{$btr->general_access|escape}">
+                                            <span class="fn_plus">
+                                                {include file='svg_icon.tpl' svgId='plus'}
+                                            </span>
+                                        </button>
                                     </div>
                                 </div>
                             {foreachelse}
@@ -535,6 +540,11 @@
                                     <div class="feature_value">
                                         <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value=""/>
                                         <input class="fn_value_id_input" type="hidden" name="features_values[{$feature_id}][]" value=""/>
+                                        <button type="button" class="btn btn_mini btn-info feature_multi_values" disabled title="{$btr->general_access|escape}">
+                                            <span class="fn_plus">
+                                                {include file='svg_icon.tpl' svgId='plus'}
+                                            </span>
+                                        </button>
                                     </div>
                                 </div>
                             {/foreach}
@@ -561,6 +571,11 @@
                             <div class="feature_value">
                                 <input class="feature_input fn_auto_option" data-id="" type="text" name="" value=""/>
                                 <input class="fn_value_id_input" type="hidden" name="" value=""/>
+                                <button type="button" class="btn btn_mini btn-info feature_multi_values" disabled title="{$btr->general_access|escape}">
+                                    <span class="fn_plus">
+                                        {include file='svg_icon.tpl' svgId='plus'}
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -913,9 +928,6 @@
                                 onSelect:function(suggestion){
                                     id_input.val(suggestion.data.id);
                                     $(this).trigger('change');
-                                },
-                                onSearchStart:function(params){
-                                    id_input.val("");
                                 }
                             });
 
@@ -939,9 +951,6 @@
                 onSelect:function(suggestion){
                     id_input.val(suggestion.data.id);
                     $(this).trigger('change');
-                },
-                onSearchStart:function(params){
-                    id_input.val("");
                 }
             });
         });

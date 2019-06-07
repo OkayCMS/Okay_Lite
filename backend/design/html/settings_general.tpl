@@ -164,6 +164,7 @@
                             <div class="mb-1">
                                 <select name="captcha_type" class="selectpicker">
                                     <option value="default" {if $settings->captcha_type == "default"}selected{/if}>{$btr->captcha_default}</option>
+                                    <option disabled>reCAPTCHA V3</option>
                                     <option value="v2" {if $settings->captcha_type == "v2"}selected{/if}>reCAPTCHA V2</option>
                                     <option value="invisible" {if $settings->captcha_type == "invisible"}selected{/if}>reCAPTCHA Invisible</option>
                                 </select>

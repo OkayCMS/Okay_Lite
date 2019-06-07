@@ -241,7 +241,7 @@ function price_slider_init() {
                     $('.fn_selected_features').html(data.selected_features);
                     $('.products_item').matchHeight();
                     // Выпадающие блоки
-                    $('.fn_switch').click(function(e){
+                    $('.fn_features .fn_switch').click(function(e){
                         e.preventDefault();
 
                         $(this).next().slideToggle(300);
@@ -531,6 +531,12 @@ $(function(){
         serviceUrl: 'ajax/search_products.php',
         minChars: 1,
         noCache: true,
+        onSearchStart: function(params) {
+            ut_tracker.start('search_products');
+        },
+        onSearchComplete: function(params) {
+            ut_tracker.end('search_products');
+        },
         onSelect: function(suggestion) {
             $( "#fn_search" ).submit();
         },

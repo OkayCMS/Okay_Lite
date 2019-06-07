@@ -121,7 +121,7 @@
                         </div>
                         
                         <div class="row" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
-                            <link itemprop="url" href="{$config->root_url}{$lang_link}/products/{$product->url}" />
+                            <link itemprop="url" href="{$config->root_url}{$lang_link}products/{$product->url}" />
                             <div class="col-sm-6">
                                 {* Old price *}
                                 <div class="old_price{if !$product->variant->compare_price} hidden{/if}">

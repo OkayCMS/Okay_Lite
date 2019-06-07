@@ -1,3 +1,18 @@
+{literal}
+    <script>
+        ut_tracker = {
+            start: function(name) {
+                performance.mark(name + ':start');
+            },
+            end: function(name) {
+                performance.mark(name + ':end');
+                performance.measure(name, name + ':start', name + ':end');
+                console.log(name + ' duration: ' + performance.getEntriesByName(name)[0].duration);
+            }
+        }
+    </script>
+{/literal}
+
 {* Title *}
 <title>{strip}
         {if $seo_filter_pattern->title}
@@ -146,6 +161,40 @@
 {* Language attribute *}
 {foreach $languages as $l}
     {if $l->enabled}
-        <link rel="alternate" hreflang="{$l->href_lang}" href="{preg_replace('/^(.+)\/$/', '$1', $l->url)}">
+        <link rel="alternate" hreflang="{if $l@first}x-default{else}{$l->href_lang}{/if}" href="{preg_replace('/^(.+)\/$/', '$1', $l->url)}">
     {/if}
 {/foreach}
+
+<script>ut_tracker.start('render:recaptcha');</script>
+{if $settings->captcha_type == "v2"}
+    <script type="text/javascript">
+        var onloadCallback = function() {
+            mysitekey = "{$settings->public_recaptcha}";
+            if($('#recaptcha1').length>0){
+                grecaptcha.render('recaptcha1', {
+                    'sitekey' : mysitekey
+                });
+            } 
+            if($('#recaptcha2').length>0){
+                grecaptcha.render('recaptcha2', {
+                    'sitekey' : mysitekey
+                });
+            }
+        };
+    </script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+{elseif $settings->captcha_type == "invisible"}
+    <script>
+        function onSubmit(token) {
+            document.getElementById("captcha_id").submit();
+        }
+        function onSubmitCallback(token) {
+            document.getElementById("fn_callback").submit();
+        }
+        function onSubmitBlog(token) {
+            document.getElementById("fn_blog_comment").submit();
+        }
+    </script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+{/if}
+<script>ut_tracker.end('render:recaptcha');</script>

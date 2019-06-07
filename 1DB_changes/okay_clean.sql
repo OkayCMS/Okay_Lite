@@ -6,7 +6,6 @@ CREATE TABLE `ok_banners` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
   `position` int(11) NOT NULL DEFAULT '0',
   `visible` tinyint(1) NOT NULL DEFAULT '1',
   `show_all_pages` tinyint(1) NOT NULL DEFAULT '0',
@@ -22,8 +21,8 @@ CREATE TABLE `ok_banners` (
   KEY `brands` (`brands`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `ok_banners` (`id`, `group_id`, `name`, `description`, `position`, `visible`, `show_all_pages`, `categories`, `pages`, `brands`) VALUES
-(1,	'group1',	'Главный баннер',	'',	1,	1,	0,	'0',	'1',	'0');
+INSERT INTO `ok_banners` (`id`, `group_id`, `name`, `position`, `visible`, `show_all_pages`, `categories`, `pages`, `brands`) VALUES
+(1,	'group1',	'Главный баннер',	1,	1,	0,	'0',	'1',	'0');
 
 DROP TABLE IF EXISTS `ok_banners_images`;
 CREATE TABLE `ok_banners_images` (
@@ -3885,15 +3884,16 @@ CREATE TABLE `ok_orders_status` (
   `is_close` tinyint(1) NOT NULL DEFAULT '0',
   `color` varchar(6) NOT NULL DEFAULT 'ffffff',
   `position` int(11) NOT NULL DEFAULT '0',
+  `status_1c` enum('not_use', 'new','accepted','to_delete') NULL DEFAULT 'not_use',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `ok_orders_status` (`id`, `name`, `is_close`, `color`, `position`) VALUES
-(1,	'Новые',	0,	'2015eb',	1),
-(2,	'Приняты',	1,	'2ccc1a',	2),
-(3,	'У курьера',	1,	'ffd000',	3),
-(4,	'Выполнены',	1,	'c400ff',	4),
-(5,	'Удалены',	0,	'eb1212',	5);
+INSERT INTO `ok_orders_status` (`id`, `name`, `is_close`, `color`, `position`, `status_1c`) VALUES
+(1,	'Новые',	0,	'2015eb',	1,	'new'),
+(2,	'Приняты',	1,	'2ccc1a',	2,	'accepted'),
+(3,	'У курьера',	1,	'ffd000',	3,	'not_use'),
+(4,	'Выполнены',	1,	'c400ff',	4,	'not_use'),
+(5,	'Удалены',	0,	'eb1212',	5,	'to_delete');
 
 DROP TABLE IF EXISTS `ok_pages`;
 CREATE TABLE `ok_pages` (

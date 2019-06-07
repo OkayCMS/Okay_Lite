@@ -488,7 +488,7 @@
         if($(".sort_extended").size()>0) {
             
             /*Явно указываем высоту списка, иначе когда скрипт удаляет элемент и ставит на его место заглушку, страница подпрыгивает*/
-            $(".fn_sort_list").css('height', $(".fn_sort_list").outerHeight());
+            $(".fn_sort_list").css('min-height', $(".fn_sort_list").outerHeight());
             
             $(".sort_extended").sortable({
                 items: ".fn_sort_item",
