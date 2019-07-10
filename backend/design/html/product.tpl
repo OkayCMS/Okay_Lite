@@ -501,6 +501,11 @@
                 <div class="toggle_arrow_wrap fn_toggle_card text-primary">
                     <a class="btn-minimize" href="javascript:;" ><i class="fa fn_icon_arrow fa-angle-down"></i></a>
                 </div>
+                {if $lang_id != $main_lang_id}
+                    <div class="boxed boxed_attention mt-h mb-0">
+                        {$btr->product_features_values_change_notice}
+                    </div>
+                {/if}
             </div>
             <div class="toggle_body_wrap on fn_card">
                 <div class="features_wrap fn_features_wrap">
@@ -519,7 +524,7 @@
                                         {/if}
                                     </div>
                                     <div class="feature_value">
-                                        <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value="{$feature_value->value|escape}"/>
+                                        <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value="{$feature_value->value|escape}"{if $lang_id != $main_lang_id} readonly{/if}/>
                                         <input class="fn_value_id_input" type="hidden" name="features_values[{$feature_id}][]" value="{$feature_value->id}"/>
                                         <button type="button" class="btn btn_mini btn-info feature_multi_values" disabled title="{$btr->general_access|escape}">
                                             <span class="fn_plus">
@@ -538,7 +543,7 @@
                                         </span>
                                     </div>
                                     <div class="feature_value">
-                                        <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value=""/>
+                                        <input class="feature_input fn_auto_option" data-id="{$feature_id}" type="text" name="features_values_text[{$feature_id}][]" value=""{if $lang_id != $main_lang_id} readonly{/if}/>
                                         <input class="fn_value_id_input" type="hidden" name="features_values[{$feature_id}][]" value=""/>
                                         <button type="button" class="btn btn_mini btn-info feature_multi_values" disabled title="{$btr->general_access|escape}">
                                             <span class="fn_plus">
@@ -569,7 +574,7 @@
                                 </span>
                             </div>
                             <div class="feature_value">
-                                <input class="feature_input fn_auto_option" data-id="" type="text" name="" value=""/>
+                                <input class="feature_input fn_auto_option" data-id="" type="text" name="" value=""{if $lang_id != $main_lang_id} readonly{/if}/>
                                 <input class="fn_value_id_input" type="hidden" name="" value=""/>
                                 <button type="button" class="btn btn_mini btn-info feature_multi_values" disabled title="{$btr->general_access|escape}">
                                     <span class="fn_plus">
@@ -919,6 +924,9 @@
                             value.attr('name', "features_values_text["+feature.id+"][]");
                             id_input.attr('name', "features_values["+feature.id+"][]");
                             id_input.val(feature.values[iv].id)
+                            {/literal}
+                            {if $lang_id == $main_lang_id}
+                            {literal}
                             value.devbridgeAutocomplete({
                                 serviceUrl:'ajax/options_autocomplete.php',
                                 minChars:0,
@@ -930,6 +938,9 @@
                                     $(this).trigger('change');
                                 }
                             });
+                            {/literal}
+                            {/if}
+                            {literal}
 
                             new_line.appendTo("div.fn_features_wrap");
                         }
@@ -939,6 +950,9 @@
             return false;
         }
 
+        {/literal}
+        {if $lang_id == $main_lang_id}
+        {literal}
         // Автодополнение свойств
         $(".fn_auto_option").each(function() {
             var feature_id = $(this).data("id"),
@@ -951,9 +965,15 @@
                 onSelect:function(suggestion){
                     id_input.val(suggestion.data.id);
                     $(this).trigger('change');
+                },
+                onSearchStart:function(params){
+                    id_input.val("");
                 }
             });
         });
+        {/literal}
+        {/if}
+        {literal}
 
         // Добавление нового свойства товара
         var new_feature = $(".fn_new_feature").clone(true);
