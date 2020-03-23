@@ -72,7 +72,7 @@ class Translations extends Okay {
         
         if (!isset($this->vars[$label])) {
             $admin_theme = $this->settings->admin_theme;
-            if ($_SESSION['admin'] && $admin_theme) {
+            if (!empty($_SESSION['admin']) && $admin_theme) {
                 $file = __DIR__ . '/../design/' . $admin_theme . '/lang/' . $label . '.php';
             } else {
                 $file = __DIR__ . '/../design/' . $this->settings->theme . '/lang/' . $label . '.php';

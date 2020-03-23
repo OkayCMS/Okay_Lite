@@ -218,7 +218,7 @@
     {* Banners *}
     {if $is_mobile === false && $is_tablet === false}
         {get_banner var=banner_group1 group='group1'}
-        {if $banner_group1->items}
+        {if !empty($banner_group1->items)}
             <div class="fn_banner_group1 banners container">
                 {foreach $banner_group1->items as $bi}
                     <div>
@@ -236,7 +236,7 @@
             </div>
         {/if}
     {/if}
-    {if $module == "MainView" || $page->url == '404'}
+    {if $module == "MainView" || (!empty($page->url) && $page->url == '404')}
         <div class="fn_ajax_content">
             {$content}
         </div>
